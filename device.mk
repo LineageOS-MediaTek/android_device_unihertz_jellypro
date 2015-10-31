@@ -61,6 +61,11 @@ PRODUCT_COPY_FILES += \
 RODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/mtklog-config.prop:system/vendor/etc/mtklog-config.prop
 
+# Motorola Camera permissions
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/com.motorola.camera.xml:system/etc/permissions/com.motorola.camera.xml \
+    $(LOCAL_PATH)/configs/com.motorola.motosignature.xml:system/etc/permissions/com.motorola.motosignature.xml
+
 # Ramdisk
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.project.rc:root/init.project.rc \
