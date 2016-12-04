@@ -1,4 +1,6 @@
 # device specific syscalls
 # extension of services/mediacodec/minijail/seccomp_policy/mediacodec-seccomp-arm.policy
 sched_getscheduler: 1
+sched_getparam: 1
 sched_setaffinity: 1
+_llseek: 1
