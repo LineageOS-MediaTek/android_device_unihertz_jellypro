@@ -1,0 +1,122 @@
+on post-fs-data
+    # Modem related device nodes
+    mkdir /data/nvram/md 0770 root system
+    chown radio radio /sys/kernel/ccci/boot
+    chown radio radio /dev/ccci_fs
+    chown radio radio /dev/ccci_ioctl0
+    chown radio radio /dev/ccci_ioctl1
+    chown radio radio /dev/ccci_ipc_1220_0
+    chown radio radio /dev/ccci_monitor
+    chown media audio /dev/ccci_aud
+
+    # SELinux
+    mkdir /data/ccci_cfg 0770 system radio
+    restorecon /data/ccci_cfg
+    restorecon_recursive /protect_f
+    restorecon_recursive /protect_s
+
+    # ignore permission check
+    write /data/ccci_cfg/md_new_ver.1 "flag"
+    chmod 0660 /data/ccci_cfg/md_new_ver.1
+
+    setprop vold.post_fs_data_done 1
+
+service gsm0710muxd /system/bin/gsm0710muxd -s /dev/ttyC0 -f 512 -n 8 -m basic
+    class core
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service gsm0710muxdmd2 /system/bin/gsm0710muxdmd2 -s /dev/ccci2_tty0 -f 512 -n 8 -m basic
+    class core
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service muxreport-daemon /system/bin/muxreport
+    class core
+    user radio
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service ril-daemon-mtk /system/bin/mtkrild
+    class core
+    socket rild stream 660 root radio
+    socket rild2 stream 660 root radio
+    socket rild3 stream 660 root radio
+    socket rild4 stream 660 root radio
+    socket rild-ims stream 660 root radio
+    socket rild-debug stream 660 radio system
+    socket rild-oem stream 660 radio system
+    socket rild-mtk-ut stream 660 radio net_bt
+    socket rild-mtk-ut-2 stream 660 radio net_bt
+    socket rild-mtk-modem stream 660 radio system
+    socket rild-atci stream 660 root radio
+    socket rild-mal stream 660 radio system
+    socket rild-mal-at stream 660 radio system
+    socket rild-vsim stream 660 root radio
+    socket sap_uim_socket1 stream 660 bluetooth bluetooth
+    socket sap_uim_socket2 stream 660 bluetooth bluetooth
+    socket sap_uim_socket3 stream 660 bluetooth bluetooth
+    socket sap_uim_socket4 stream 660 bluetooth bluetooth
+    user root
+    group radio cache inet misc audio sdcard_r sdcard_rw log system
+    disabled
+    oneshot
+
+service ril-daemon-mtkmd2 /system/bin/mtkrildmd2
+    class core
+    socket rild-md2 stream 660 root radio
+    socket rild2-md2 stream 660 root radio
+    socket rild-debug-md2 stream 660 radio system
+    socket rild-oem-md2 stream 660 radio system
+    socket rild-mtk-ut-md2 stream 660 radio net_bt
+    socket rild-mtk-ut-2-md2 stream 660 radio net_bt
+    socket rild-mtk-modem-md2 stream 660 radio system
+    socket rild-atci-md2 stream 660 root radio
+    socket rild-vsim-md2 stream 660 root radio
+    socket rild-mal-md2 stream 660 radio system
+    socket rild-mal-at-md2 stream 660 radio system
+    user root
+    group radio cache inet misc audio sdcard_r sdcard_rw log system
+    disabled
+    oneshot
+
+#
+#  Modem related services (Begin)
+#
+
+service ccci_fsd /system/bin/ccci_fsd 0
+    user radio
+    group radio system
+    class core
+    oneshot
+
+service ccci_mdinit /system/bin/ccci_mdinit 0
+    user system
+    group radio system
+    class core
+    oneshot
+
+service ccci_rpcd /system/bin/ccci_rpcd 0
+    user radio
+    group radio cache inet misc
+    class core
+    oneshot
+
+#
+#
+#  Modem related services (End)
+#
+
+service terservice /system/bin/terservice
+    class core
+    user radio
+    group radio cache inet misc
+    oneshot
+
+on property:ril.muxreport=1
+    start muxreport-daemon
