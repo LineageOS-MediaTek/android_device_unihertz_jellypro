@@ -89,3 +89,6 @@ BOARD_SEPOLICY_DIRS += $(LOCAL_PATH)/sepolicy
 
 # Seccomp filter
 BOARD_SECCOMP_POLICY := $(LOCAL_PATH)/seccomp
+
+# pre-N audio blobs
+TARGET_HAS_PRE_N_AUDIO := true
