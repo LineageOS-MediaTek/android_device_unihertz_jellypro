@@ -58,13 +58,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/thermal.off.conf:system/etc/.tp/thermal.off.conf \
     $(LOCAL_PATH)/configs/thermal/.thermal_policy_00:system/etc/.tp/.thermal_policy_00
 
-# Fingerprint
-PRODUCT_PACKAGES += \
-    fingerprintd
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.fingerprint.xml:system/etc/permissions/android.hardware.fingerprint.xml
-
 # Camera
 PRODUCT_PROPERTY_OVERRIDES += \
     media.stagefright.legacyencoder=true \
