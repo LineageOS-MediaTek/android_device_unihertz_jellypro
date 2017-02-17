@@ -1,6 +1,10 @@
 import init.mt6735.usb.rc
 import init.modem.rc
 
+on early-init
+    # Turn off backlight on blank
+    write /sys/class/leds/lcd-backlight/trigger "backlight"
+
 on init
     export LD_PRELOAD "libmtk_symbols.so"
 
@@ -12,14 +16,6 @@ on init
 
     chown root system /dev/kmsg
     chmod 0660 /dev/kmsg
-
-on charger
-    mount ext4 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/system /system ro wait
-    chmod 0666 /dev/kmsg
-    write /sys/devices/platform/battery_meter/FG_daemon_log_level 7
-    start fuelgauged
-    start kpoc_charger
-    start servicemanager
 
 on fs
     mount_all /fstab.mt6735
@@ -629,8 +625,10 @@ service conn_launcher /system/bin/6620_launcher -p /system/etc/firmware/
     class core
 
 # Charger
-service kpoc_charger /system/bin/kpoc_charger
+service charger /sbin/healthd -c
     class charger
+    critical
+    seclabel u:r:healthd:s0
 
 service fingerprintd /system/bin/fingerprintd
     class late_start
