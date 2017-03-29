@@ -6,8 +6,6 @@ on early-init
     write /sys/class/leds/lcd-backlight/trigger "backlight"
 
 on init
-    export LD_PRELOAD "libmtk_symbols.so"
-
     # mount points
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
@@ -318,7 +316,7 @@ on post-fs-data
     # SMI
     chmod 0660 /dev/MTK_SMI
     chown system camera /dev/MTK_SMI
-    
+
     chown system camera /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
     chmod 0660 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
 
@@ -370,7 +368,7 @@ on post-fs-data
     # AGPS
     mkdir /data/agps_supl 0771 gps system
 
-    # Thermal	
+    # Thermal
     mkdir /data/.tp/ 0775 system system
 
     chmod 0660 /dev/ttyC2
@@ -436,7 +434,7 @@ on boot
     chmod 0660 /proc/cpufreq/cpufreq_limited_by_hevc
     chown system system /proc/cpufreq/cpufreq_limited_max_freq_by_user
     chmod 0660 /proc/cpufreq/cpufreq_limited_max_freq_by_user
-    
+
     # change permissions about terminal
     chown root radio /proc/net/vlan/config
     chmod 0640 /proc/net/vlan/config
