@@ -6,6 +6,7 @@ allow mediaserver mtk_smi_device:chr_file r_file_perms;
 allow mediaserver proc:file { read ioctl open };
 allow mediaserver devmap_device:chr_file r_file_perms;
 allow mediaserver devmap_device:chr_file { ioctl };
+allow mediaserver sysfs_membw:file rw_file_perms;
 
 # video codec
 allow mediaserver Vcodec_device:chr_file rw_file_perms;
