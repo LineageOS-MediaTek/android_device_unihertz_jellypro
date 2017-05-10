@@ -9,11 +9,6 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 # Recovery allowed devices
 TARGET_OTA_ASSERT_DEVICE := h5000,H5000
 
-PRODUCT_PACKAGES += \
-    libmtkshim_log \
-    libmtkshim_audio \
-    libstlport
-
 # Lights
 PRODUCT_PACKAGES += \
     lights.mt6753
