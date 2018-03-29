@@ -22,7 +22,6 @@ dalvik.vm.heapsize=512m
 # Audio
 ro.camera.sound.forced=0
 ro.audio.silent=0
-persist.af.audio_patch_fm=1
 
 # enable soft keys
 qemu.hw.mainkeys=0
@@ -39,10 +38,10 @@ persist.radio.multisim.config=dsds
 ril.current.share_modem=2
 ril.external.md=0
 ril.telephony.mode=0
-persist.radio.fd.counter=15
-persist.radio.fd.off.counter=5
-persist.radio.fd.r8.counter=15
-persist.radio.fd.off.r8.counter=5
+persist.radio.fd.counter=150
+persist.radio.fd.off.counter=50
+persist.radio.fd.r8.counter=150
+persist.radio.fd.off.r8.counter=50
 ro.mtk_gemini_support=1
 ro.mtk_enable_md1=1
 ro.mtk_flight_mode_power_off_md=1
