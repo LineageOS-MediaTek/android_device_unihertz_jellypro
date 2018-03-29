@@ -4,7 +4,7 @@
 #
 
 # RIL
-rild.libpath=/system/lib64/mtk-ril.so
+rild.libpath=/system/lib/mtk-ril.so
 rild.libargs=-d /dev/ttyC0
 
 # Wifi
@@ -55,8 +55,8 @@ persist.md.perm.checked=1
 
 # other things
 ro.mediatek.chip_ver=S01
-ro.mediatek.version.release=alps-mp-m0.mp1-V2.39.1_wtk6753.65u.m0_P16
-ro.mediatek.platform=MT6735
+ro.mediatek.version.release=alps-mp-n1.mp1-V1_lenovo6737m.35.n1_P68
+ro.mediatek.platform=MT6737M
 bgw.current3gband=0
 ro.sf.hwrotation=0
 persist.mtk.wcn.combo.chipid=-1

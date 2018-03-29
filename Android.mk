@@ -1,6 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(TARGET_DEVICE),h5000)
+ifeq ($(TARGET_DEVICE),nicklaus)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
 

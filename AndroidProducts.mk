@@ -1,2 +1,0 @@
-PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/full_h5000.mk

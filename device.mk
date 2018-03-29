@@ -1,17 +1,16 @@
-LOCAL_PATH := device/uhans/h5000
+# Assert
+TARGET_OTA_ASSERT_DEVICE := nicklaus
 
+# Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-# Device uses high-density artwork where available
+# Screen Density
 PRODUCT_AAPT_CONFIG := normal xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Recovery allowed devices
-TARGET_OTA_ASSERT_DEVICE := h5000,H5000
-
 # Lights
 PRODUCT_PACKAGES += \
-    lights.mt6753
+    lights.mt6737m
 
 # Audio
 PRODUCT_COPY_FILES += \
@@ -21,8 +20,8 @@ PRODUCT_COPY_FILES += \
 
 # Media
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
-	$(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
 
 # Keyboard layout
 PRODUCT_COPY_FILES += \
@@ -43,10 +42,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/meta_init.rc:root/meta_init.rc \
     $(LOCAL_PATH)/rootdir/ueventd.mt6735.rc:root/ueventd.mt6735.rc
 
-# TWRP
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab
-
 # Thermal
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/.ht120.mtc:system/etc/.tp/.ht120.mtc \
@@ -58,7 +53,7 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
 # Common stuff
-$(call inherit-product, vendor/mad/config/common.mk)
+$(call inherit-product, device/mediatek/common/common.mk)
 
 # Vendor
-$(call inherit-product, vendor/uhans/h5000/h5000-vendor.mk)
+$(call inherit-product, vendor/motorola/nicklaus/nicklaus-vendor.mk)
