@@ -1,0 +1,88 @@
+on property:vold.decrypt=trigger_restart_framework
+    setprop soter.teei.vold.decrypt OK
+
+on fs
+	write /proc/bootprof "start teei_daemon (on fs)"
+    chmod 0666 /dev/teei_client
+    chown system system /dev/teei_client
+    chmod 0660 /dev/teei_config
+    chown system system /dev/teei_config
+    chmod 0660 /dev/tz_vfs
+    chown system system /dev/tz_vfs
+    chmod 0666 /dev/teei_fp
+    chown system /dev/teei_fp
+    chmod 0660 /dev/emmcrpmb0
+    chown system system /dev/emmcrpmb0
+    chown system /dev/ut_keymaster
+    chmod 0666 /dev/ut_keymaster
+
+    start teei_daemon
+    write /proc/bootprof "start teei_daemon end (on fs)"
+
+on post-fs-data
+    write /proc/bootprof "start teei cfg (on post-fs-data)"
+    mkdir /data/thh
+#add gouxinyue for tee sdk    
+    mkdir /data/thh/tee_00
+    mkdir /data/thh/tee_01
+    mkdir /data/thh/tee_02
+    mkdir /data/thh/tee_03
+    mkdir /data/thh/tee_04
+    mkdir /data/thh/tee_05
+    mkdir /data/thh/tee_06
+    mkdir /data/thh/tee_07
+    mkdir /data/thh/tee
+    mkdir /data/thh/tee/tas
+#end
+    chmod 0755 /data/thh
+    chown system system /data/thh
+#add gouxinyue for tee sdk 
+    chmod 0755 /data/thh/tee_00
+    chown system system /data/thh/tee_00
+    chmod 0755 /data/thh/tee_01
+    chown system system /data/thh/tee_01
+    chmod 0755 /data/thh/tee_02
+    chown system system /data/thh/tee_02
+    chmod 0755 /data/thh/tee_03
+    chown system system /data/thh/tee_03
+    chmod 0755 /data/thh/tee_04
+    chown system system /data/thh/tee_04
+    chmod 0755 /data/thh/tee_05
+    chown system system /data/thh/tee_05
+    chmod 0755 /data/thh/tee_06
+    chown system system /data/thh/tee_06
+    chmod 0755 /data/thh/tee_07
+    chown system system /data/thh/tee_07
+    chmod 0755 /data/thh/tee
+    chown system system /data/thh/tee
+    chmod 0755 /data/thh/tee/tas
+    chown system system /data/thh/tee/tas
+#end
+    write /proc/bootprof "start teei cfg end (on post-fs-data)"
+    setprop soter.encrypt.state OK
+    write /proc/bootprof "start teei cfg end (set soter property)"
+#add gouxinyue for tee sdk     
+    restorecon_recursive /data/thh
+    write /proc/bootprof "start teei cfg end (on restorecon-thh)"
+#end
+
+# teei service daemon
+#add zhuhailin for tee sdk 
+service teei_daemon /vendor/bin/teei_daemon
+    class core
+    user root
+    group system
+    disabled
+   # oneshot
+
+#add zhuhailin for tee sdk end
+on property:soter.teei.init=INIT_OK
+    start init_thh_service
+
+#add zhuhailin for tee sdk 
+service init_thh_service /vendor/bin/init_thh startload
+    class core
+    user root
+    group system
+    disabled
+    oneshot
