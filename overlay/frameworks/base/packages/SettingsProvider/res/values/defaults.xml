@@ -1,0 +1,3 @@
+<resources>
+    <bool name="def_double_tap_to_wake">false</bool>
+</resources>

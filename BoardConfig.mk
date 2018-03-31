@@ -101,3 +101,6 @@ TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
 # pre-N audio blobs
 TARGET_HAS_PRE_N_AUDIO := true
+
+# T2W Node
+TARGET_TAP_TO_WAKE_NODE := /proc/android_touch/SMWP
