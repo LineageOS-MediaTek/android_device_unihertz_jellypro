@@ -15,6 +15,10 @@ FINGERPRINT_SUPPORT := true
 PRODUCT_PACKAGES += \
     lights.mt6737m
 
+# Power
+PRODUCT_PACKAGES += \
+    power.mt6737m
+
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio_device.xml:system/etc/audio_device.xml \
