@@ -35,7 +35,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media/media_codecs_mediatek_video.xml:system/etc/media_codecs_mediatek_video.xml \
     $(LOCAL_PATH)/configs/media/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
     $(LOCAL_PATH)/configs/media/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/media/mtk_omx_core.cfg:system/etc/mtk_omx_core.cfg
+    $(LOCAL_PATH)/configs/media/mtk_omx_core.cfg:system/vendor/etc/mtk_omx_core.cfg
 
 # Keyboard layout
 PRODUCT_COPY_FILES += \
@@ -49,10 +49,10 @@ PRODUCT_COPY_FILES += \
 
 # Misc
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/custom.conf:system/etc/custom_conf
+    $(LOCAL_PATH)/configs/custom.conf:system/vendor/etc/custom_conf
 
 RODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/mtklog-config.prop:system/etc/mtklog-config.prop
+    $(LOCAL_PATH)/configs/mtklog-config.prop:system/vendor/etc/mtklog-config.prop
 
 # Permissions
 RODUCT_COPY_FILES += \
