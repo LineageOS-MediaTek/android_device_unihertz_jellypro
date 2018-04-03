@@ -1,3 +1,10 @@
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
+# $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+
+# Inherit from the common Open Source product configuration
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+
 # Assert
 TARGET_OTA_ASSERT_DEVICE := nicklaus,e4plus
 
@@ -76,8 +83,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/thermal.off.conf:system/vendor/etc/.tp/thermal.off.conf \
     $(LOCAL_PATH)/configs/thermal/thermal_screenoff_full.conf:system/etc/vendor/.tp/thermal_screenoff_full.conf
 
-# Dalvik/HWUI
+# Dalvik heap configurations
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+
+# Call hwui memory config
+$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
 # Common stuff
 $(call inherit-product, device/mediatek/common/common.mk)
