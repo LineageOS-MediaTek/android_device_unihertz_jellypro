@@ -14,6 +14,10 @@ on post-fs-data
     chown system system /persist
     chmod 0771 /persist
 
+    mkdir /data/nfc 0770 nfc nfc
+    chown nfc nfc /data/nfc
+    chmod 0770 /data/nfc
+	
     # jijin.wang restorecon /persist to set SEPolicy label.
     restorecon /persist
     # lenovo sw zhangpei5 20170223 save log in /persist/simlock
@@ -123,22 +127,7 @@ on post-fs-data
     
 	chmod 0660 /dev/BU64745GWZAF
     chown system camera /dev/BU64745GWZAF
-#wangkangmin@wind-mobi.com 20161206 add for camera af and BB otp begin
-    chmod 0660 /dev/DW9718AF
-    chown system camera /dev/DW9718AF
 
-    chmod 0660 /dev/DW9718QTAF
-    chown system camera /dev/DW9718QTAF
-
-    chmod 0660 /dev/CAM_CAL_DRV1
-    chown system camera /dev/CAM_CAL_DRV1
-
-    chmod 0660 /dev/CAM_CAL_DRV2
-    chown system camera /dev/CAM_CAL_DRV2
-
-    chmod 0660 /dev/CAM_CAL_DRV3
-    chown system camera /dev/CAM_CAL_DRV3
-#wangkangmin@wind-mobi.com 20161206 add for camera af and BB otp end
 #SMB
     chown system system /proc/smb/ScreenComm
     chmod 0660 /proc/smb/ScreenComm
@@ -254,4 +243,3 @@ on property:persist.sys.runin=enable
 
 on property:persist.sys.runin=disable
     write /sys/class/power_supply/battery/device/BatteryTestStatus 0
-
