@@ -1,5 +1,5 @@
 # Assert
-TARGET_OTA_ASSERT_DEVICE := nicklaus
+TARGET_OTA_ASSERT_DEVICE := nicklaus,e4plus
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
@@ -10,10 +10,6 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # Fingerprint
 FINGERPRINT_SUPPORT := true
-
-# Lights
-PRODUCT_PACKAGES += \
-    lights.mt6737m
 
 # Power
 PRODUCT_PACKAGES += \

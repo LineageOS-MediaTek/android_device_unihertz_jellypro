@@ -7,7 +7,6 @@ FORCE_32_BIT := true
 
 # Platform
 TARGET_BOARD_PLATFORM := mt6737m
-TARGET_NO_BOOTLOADER := true
 
 # Architecture
 ifeq ($(FORCE_32_BIT),true)
@@ -48,11 +47,11 @@ ifeq ($(FORCE_32_BIT),true)
 ARCH := arm
 TARGET_KERNEL_ARCH := arm
 TARGET_KERNEL_CONFIG := nicklaus_defconfig
-BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,32N2 androidboot.selinux=permissive androidboot.selinux=disabled 
+BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,32N2 androidboot.selinux=permissive
 BOARD_KERNEL_OFFSET := 0x00008000
 else
 TARGET_KERNEL_ARCH := arm64
-BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive androidboot.selinux=disabled 
+BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
 BOARD_KERNEL_OFFSET = 0x00080000
 TARGET_USES_64_BIT_BINDER := true
 endif
@@ -68,13 +67,8 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Recovery
-BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
-
-# Include needed symbols
-TARGET_INCLUDE_XLOG_SYMBOLS := true
-TARGET_INCLUDE_AUDIO_SYMBOLS := true
+# TARGET_USERIMAGES_USE_F2FS := true
 
 # Display
 TARGET_SCREEN_HEIGHT := 1280
@@ -82,9 +76,6 @@ TARGET_SCREEN_WIDTH := 720
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
-
-# LightHAL
-TARGET_PROVIDES_LIBLIGHT := true
 
 # Recovery
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -98,6 +89,3 @@ BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy
 
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
-
-# pre-N audio blobs
-TARGET_HAS_PRE_N_AUDIO := true
