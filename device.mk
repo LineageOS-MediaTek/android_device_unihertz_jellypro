@@ -83,6 +83,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/thermal.off.conf:system/vendor/etc/.tp/thermal.off.conf \
     $(LOCAL_PATH)/configs/thermal/thermal_screenoff_full.conf:system/etc/vendor/.tp/thermal_screenoff_full.conf
 
+# Extras
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+	ro.config.low_ram=false \
+	ro.hw.gyroscope=false
+
 # Dalvik heap configurations
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
