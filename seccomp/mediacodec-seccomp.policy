@@ -3,3 +3,9 @@
 sched_getscheduler: 1
 sched_setaffinity: 1
 sched_getparam: 1
+_llseek: 1
+fsync: 1
+mlock: 1
+munlock: 1
+setsockopt: 1
+setrlimit: 1
