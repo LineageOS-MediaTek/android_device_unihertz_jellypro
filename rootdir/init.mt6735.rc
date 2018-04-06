@@ -13,6 +13,7 @@ import init.trustonic.rc
 import init.microtrust.rc
 import init.common_svc.rc
 import init.c2k.rc
+import init.common.rc
 
 # init.modem.rc must be the LAST rc file because vold.post_fs_data_done is set in it
 import init.modem.rc
