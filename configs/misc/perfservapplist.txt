@@ -1,0 +1,5 @@
+CMD_SET_CPU_CORE_MIN com.imangi.templerun2 3
+CMD_SET_CPU_CORE_MIN com.facebook.katana 4
+CMD_SET_CPU_FREQ_MIN com.facebook.katana 1300000
+CMD_SET_CPU_CORE_MIN com.instagram.android 4
+

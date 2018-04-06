@@ -24,10 +24,10 @@ PRODUCT_PACKAGES += \
 
 # Audio
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio/audio_device.xml:system/etc/audio_device.xml \
-    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:system/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/configs/audio/a2dp_audio_policy_configuration.xml:/system/etc/a2dp_audio_policy_configuration.xml \
-    $(LOCAL_PATH)/configs/audio/AudioParamOptions.xml:/system/vendor/etc/audio_param/AudioParamOptions.xml
+    $(LOCAL_PATH)/configs/audio/audio_device.xml:system/vendor/etc/audio_device.xml \
+    $(LOCAL_PATH)/configs/audio/audio_em.xml:system/vendor/etc/audio_em.xml \
+    $(LOCAL_PATH)/configs/audio/AudioParamOptions.xml:/system/vendor/etc/audio_param/AudioParamOptions.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
@@ -54,12 +54,28 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/idc/uinput-egis.idc:system/usr/idc/uinput-egis.idc
 
+# Telephony
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/telephony/cdma_ecc_list.xml:system/vendor/etc/cdma_ecc_list.xml \
+    $(LOCAL_PATH)/configs/telephony/cdma_ecc_list_ss.xml:system/vendor/etc/cdma_ecc_list_ss.xml
+
 # Misc
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/custom.conf:system/vendor/etc/custom_conf
+    $(LOCAL_PATH)/configs/misc/custom.conf:system/vendor/etc/custom.conf
+    $(LOCAL_PATH)/configs/misc/clad.conf:system/etc/clad.conf \
+    $(LOCAL_PATH)/configs/misc/perfservapplist.txt:system/vendor/etc/perfservapplist.txt \
+    $(LOCAL_PATH)/configs/misc/perfservscntbl.txt:system/vendor/etc/perfservscntbl.txt \
+    $(LOCAL_PATH)/configs/misc/slp_conf:system/vendor/etc/slp_conf \
+    $(LOCAL_PATH)/configs/misc/resmonwhitelist.txt:system/vendor/etc/resmonwhitelist.txt \
+    $(LOCAL_PATH)/configs/misc/factory.ini:system/vendor/etc/factory.ini \
+    $(LOCAL_PATH)/configs/misc/mtklog-config.prop:system/vendor/etc/mtklog-config.prop
 
-RODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/mtklog-config.prop:system/vendor/etc/mtklog-config.prop
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/radvd/radvd.conf:system/vendor/etc/radvd.conf
+
+PRODUCT_COPY_FILES += \
+    $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/wide-dhcpv6,system/vendor/etc/wide-dhcpv6)
+
 
 # Motorola Camera permissions
 PRODUCT_COPY_FILES += \
