@@ -46,7 +46,7 @@ TARGET_SCREEN_WIDTH := 720
 # Graphics
 MTK_HWC_SUPPORT := yes
 MTK_HWC_VERSION := 1.4.1
-MTK_GPU_VERSION := mali midgard r7p0
+MTK_GPU_VERSION := mali midgard r18p0
 
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
