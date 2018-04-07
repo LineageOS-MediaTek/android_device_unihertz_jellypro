@@ -14,6 +14,9 @@
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/logo      0660    root    system
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/frp       0660    root    system
 
+#FPC
+/dev/esfp0 				  0660 system system
+
 # OTP
 /dev/otp                 0660 system system
 
@@ -57,7 +60,6 @@
 
 # Anyone can read the logs, but if they're not in the "logs"
 # group, then they'll only see log entries for their UID.
-/dev/xLog                 0600   root       root
 /dev/log/ksystem          0600   root       log
 
 /dev/ccci*                0660   radio      radio
@@ -79,6 +81,8 @@
 /dev/pvrsrvkm             0666   root       root
 /dev/pvr_sync             0666   root       root
 
+# NFC
+/dev/pn547                0664   nfc        nfc
 
 /sys/devices/platform/leds-mt65xx/leds/green   delay_on      0664  system   system
 /sys/devices/platform/leds-mt65xx/leds/green   delay_off      0664  system   system
@@ -112,13 +116,3 @@
 #MTK In-House TEE
 /dev/ttyACM0              0660   radio      radio
 
-# egistec fp add 20160809 tee_xuzhifeng
-/dev/esfp0		  0660   system     system
-/sys/devices/platform/egis_input/navigation_enable 0660 system system
-/sys/devices/platform/egis_input/navigation_event 0660 system system
-
-#nfc permissions
-/dev/pn547                0664   nfc        nfc
-
-# tp test
-/dev/rmi0		  0666   system     system

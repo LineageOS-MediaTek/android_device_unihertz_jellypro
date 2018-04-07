@@ -28,11 +28,11 @@ on post-fs-data
     #restore necessary files into data partition
     mkdir /data/thh 0770 root root
     mkdir /data/thh/tee_00 0770 root root
-    copy /cache/thh/tee_00/thh_mt6737_nicklaus.certs /data/thh/tee_00/thh_mt6737_nicklaus.certs
-    copy /cache/thh/tee_00/thh_mt6737_nicklaus.cfg /data/thh/tee_00/thh_mt6737_nicklaus.cfg
+    copy /cache/thh/tee_00/thh_mt6737_motoe4plus.certs /data/thh/tee_00/thh_mt6737_motoe4plus.certs
+    copy /cache/thh/tee_00/thh_mt6737_motoe4plus.cfg /data/thh/tee_00/thh_mt6737_motoe4plus.cfg
     mkdir /data/local 0751 root root
     mkdir /data/local/tmp 0771 shell shell
-    copy /cache/local/tmp/thh_mt6737_nicklaus.cfg /data/local/tmp/thh_mt6737_nicklaus.cfg
+    copy /cache/local/tmp/thh_mt6737_motoe4plus.cfg /data/local/tmp/thh_mt6737_motoe4plus.cfg
 
 
 #add by yangchao
@@ -138,13 +138,7 @@ on post-fs-data
     chmod 660 /dev/ttyGS1 
     chown system /dev/ttyGS1
    
-
-# lenovo-sw, chenzz3, configure permission for perftags device, begin
-    chown system system /dev/perftags
-    chmod 0664 /dev/perftags
-# lenovo-sw, chenzz3, configure permission for perftags device, end
-
-
+										 
     chmod 0666 /dev/exm0
 
 #Lct add by zl for navi

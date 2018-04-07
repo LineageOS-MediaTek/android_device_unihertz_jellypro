@@ -52,8 +52,8 @@ on init
     chmod 0666 /dev/kmsg
 
 # increase sysctl_rmem_max and sysctl_wmem_max values to 2M
-    write /proc/sys/net/core/wmem_max 2097152
-    write /proc/sys/net/core/rmem_max 2097152
+    write /proc/sys/net/core/wmem_max 8388608
+    write /proc/sys/net/core/rmem_max 8388608
 
 on late-init
     write /proc/bootprof "INIT:late-init"
@@ -77,17 +77,15 @@ on charger
     start charge_only_mode
     start servicemanager
 
-    # disable USB
-    write /sys/devices/platform/mt_usb/cmode 0
-
 on fs
     write /proc/bootprof "INIT:Mount_START"
     write /sys/kernel/debug/tracing/trace_marker "B|1|Mount"
     mount_all /fstab.mt6735
-    #exec /system/bin/tune2fs -O has_journal -u 10010 -r 4096 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata
    	
     write /sys/kernel/debug/tracing/trace_marker "E"
     write /proc/bootprof "INIT:Mount_END"
+    wait /dev/block/bootdevice/by-name/hw
+    start oem-hw-sh										 
 
 on post-fs
     write /proc/bootprof "INIT:post-fs"
@@ -144,7 +142,9 @@ on post-fs-data
     mkdir /dev/radio 0770 radio radio
 
     mkdir /data/drm/wv 0770 drm system
-
+    # extend timeout to 10 secs for loading MD images
+    write /sys/class/firmware/timeout 10
+	
 # GPS
     mkdir /data/gps_mnl 0771 gps system
     mkdir /data/misc/gps 0770 gps system
@@ -195,11 +195,6 @@ on post-fs-data
     chown root diag /sys/module/tpd_debug/parameters/tpd_em_log
     chown root diag /sys/module/tpd_debug/parameters/tpd_em_log_to_fs
 
-   
-    chmod 0664 /sys/devices/platform/leds-mt65xx/leds/red/brightness
-    chmod 0664 /sys/devices/platform/leds-mt65xx/leds/green/brightness
-    # End of Vanzo:tanglei
-
     chmod 0666 /dev/pmem_multimedia
 
     # watch dog kicker
@@ -235,7 +230,6 @@ on post-fs-data
     chmod 0660 /dev/als_ps
     chmod 0660 /dev/gyroscope
     chmod 0660 /dev/aal_als
-    chmod 0660 /dev/m_batch_misc
 
     chmod 0660 /sys/devices/platform/msensor/driver/cpsopmode
     chmod 0660 /sys/devices/platform/msensor/driver/cpsreptxy
@@ -250,7 +244,6 @@ on post-fs-data
     chown radio system /dev/als_ps
     chown system system /dev/gyroscope
     chown system system /dev/aal_als
-    chown system system /dev/m_batch_misc
     chmod 0660 /sys/class/misc/m_acc_misc/accenablenodata
     chmod 0660 /sys/class/misc/m_acc_misc/accactive
     chmod 0660 /sys/class/misc/m_acc_misc/accdelay
@@ -419,9 +412,6 @@ chmod 0660 /sys/class/misc/m_mag_misc/magactive
 
     chmod 0660 /dev/mtk_disp_mgr
     chown system graphics /dev/mtk_disp_mgr
-  
-    chmod 0660 /sys/devices/platform/mtk_disp_mgr.0/rgb
-    chown system system /sys/devices/platform/mtk_disp_mgr.0/rgb
 
     chmod 0660 /dev/mtkfb_vsync
     chown system graphics /dev/mtkfb_vsync
@@ -615,12 +605,6 @@ on boot
     chmod 0660 /sys/power/autosleep
 
     chmod 0664 /sys/class/leds/lcd-backlight/brightness
-#lenovo.sw START wangsx3 add for leds sys node
-    chmod 0666 /sys/class/leds/flash/brightness
-    chmod 0666 /sys/class/leds/torch/brightness
-    chown system system /sys/class/leds/torch/brightness
-    chown system system /sys/class/leds/flash/brightness
-#lenovo.sw END wangsx3 add for leds sys node
     chown system system /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
     chmod 0660 /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
     chown root   system /sys/kernel/debug/binder/transaction_log_enable
@@ -636,9 +620,7 @@ on boot
     chown system system /sys/class/leds/keyboard-backlight/trigger
     chown system system /sys/class/leds/jogball-backlight/trigger
     chown system system /sys/class/leds/red/trigger
-    chown system system /sys/class/leds/green/trigger
-    chmod 0666 /sys/class/leds/torch/brightness
-    chown system system /sys/class/leds/torch/brightness    
+    chown system system /sys/class/leds/green/trigger  
     chown system system /sys/class/leds/blue/trigger
 
     chown system system /sys/kernel/debug/ged/hal/fps_upper_bound
@@ -740,7 +722,7 @@ on property:vold.decrypt=trigger_restart_min_framework
     start start_modem
     start msensord
     start permission_check
-
+    start stp_dump
 on property:vold.decrypt=trigger_restart_framework
     write /proc/bootprof "INIT:vold.decrypt=trigger_restart_framework"
     start nvram_daemon
@@ -758,12 +740,12 @@ on property:vold.decrypt=trigger_shutdown_framework
     setprop dev.bootcomplete 0
     setprop service.nvram_init 0
 
-service stop_modem /system/bin/md_ctrl 0
+service stop_modem /vendor/bin/md_ctrl 0
     class main
     disabled
     oneshot
 
-service start_modem /system/bin/md_ctrl 1
+service start_modem /vendor/bin/md_ctrl 1
     class main
     disabled
     oneshot
@@ -859,41 +841,6 @@ service aal /vendor/bin/aal
     class main
     user system
     group system graphics
-
-service dhcpcd_bt-pan /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpcd_wlan0 /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpcd_p2p /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
-    user dhcp
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service iprenew_p2p /system/bin/dhcpcd -n
-    class main
-    user dhcp
-    group net_admin net_raw
-    disabled
-    oneshot
 
 service DMAgent /vendor/bin/dm_agent_binder
     class main
