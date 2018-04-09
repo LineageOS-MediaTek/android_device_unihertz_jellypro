@@ -31,10 +31,7 @@ PRODUCT_COPY_FILES += \
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/bluetooth/bt_did.conf:system/etc/bluetooth/bt_did.conf \
-    $(LOCAL_PATH)/configs/bluetooth/bt_stack.conf:system/etc/bluetooth/bt_stack.conf \
-    $(LOCAL_PATH)/configs/bluetooth/bt_stack.conf.debug:system/etc/bluetooth/bt_stack.conf.debug \
-    $(LOCAL_PATH)/configs/bluetooth/bt_stack.conf.sqc:system/etc/bluetooth/bt_stack.conf.sqc
+    $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/bluetooth,system/etc/bluetooth)
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -61,8 +58,8 @@ PRODUCT_COPY_FILES += \
 
 # Misc
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/misc/custom.conf:system/vendor/etc/custom.conf
-    $(LOCAL_PATH)/configs/misc/clad.conf:system/etc/clad.conf \
+    $(LOCAL_PATH)/configs/misc/custom.conf:system/vendor/etc/custom.conf \
+    $(LOCAL_PATH)/configs/misc/clatd.conf:system/etc/clatd.conf \
     $(LOCAL_PATH)/configs/misc/perfservapplist.txt:system/vendor/etc/perfservapplist.txt \
     $(LOCAL_PATH)/configs/misc/perfservscntbl.txt:system/vendor/etc/perfservscntbl.txt \
     $(LOCAL_PATH)/configs/misc/slp_conf:system/vendor/etc/slp_conf \
@@ -76,6 +73,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/wide-dhcpv6,system/vendor/etc/wide-dhcpv6)
 
+# Wifi
+PRODUCT_COPY_FILES += \
+    $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/wifi,system/etc/wifi)
 
 # Motorola Camera permissions
 PRODUCT_COPY_FILES += \
@@ -92,7 +92,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.mt6735.rc:root/init.mt6735.rc \
     $(LOCAL_PATH)/rootdir/fstab.mt6735:root/fstab.mt6735 \
     $(LOCAL_PATH)/rootdir/enableswap.sh:root/enableswap.sh \
-    $(LOCAL_PATH)/rootdir/init.rc:root/init.rc \
     $(LOCAL_PATH)/rootdir/sbin/busybox:root/sbin/busybox \
     $(LOCAL_PATH)/rootdir/init.microtrust.rc:root/init.microtrust.rc \
     $(LOCAL_PATH)/rootdir/init.connectivity.rc:root/init.connectivity.rc \
