@@ -1,1 +1,0 @@
-allow mediacodec sysfs_membw:file rw_file_perms;

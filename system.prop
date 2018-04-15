@@ -1,40 +1,77 @@
 #
+# system.prop for nicklaus
 #
-# system.prop for Uhans H5000
-#
-
-# RIL
-rild.libpath=/system/lib/mtk-ril.so
-rild.libargs=-d /dev/ttyC0
-
-# Wifi
-wifi.interface=wlan0
-wifi.direct.interface=p2p0
-
-# OpenGL
-ro.opengles.version=196609
-ro.kernel.qemu.gles=0
-
-# Dalvik
-dalvik.vm.heapgrowthlimit=256m
-dalvik.vm.heapsize=512m
+# Add for remove red borders
+persist.sys.strictmode.visual=0
+persist.sys.strictmode.disable=1
 
 # Audio
 ro.camera.sound.forced=0
 ro.audio.silent=0
 
-# enable soft keys
-qemu.hw.mainkeys=0
+# Chipset
+ro.hardware=mt6735
 
 # Disable dirty region for Mali
 debug.hwui.render_dirty_regions=false
+ro.hardware.egl=mali
 
-# lcd density
+# LCD
 ro.sf.lcd_density=320
+persist.sys.lcd_density=320
+
+# MTK H/W
+ro.mediatek.chip_ver=S01
+ro.mediatek.version.release=alps-mp-n1.mp1-V1_lenovo6737m.35.n1_P68
+ro.mediatek.version.branch=alps-mp-n1.mp1
+ro.mediatek.platform=MT6737M
+ro.mediatek.version.sdk=4
+persist.mtk.wcn.combo.chipid=0x0335
+persist.mtk.wcn.patch.version=-1
+persist.mtk.wcn.fwlog.status=0
+persist.mtk.wcn.dynamic.dump=0
+service.wcn.driver.ready=no
+persist.sys.scrollingcache=2
+mediatek.wlan.chip=CONSYS_MT6735
+mediatek.wlan.module.postfix=_consys_mt6735
+ro.mtk_gps_support=1
+persist.mtk.combo.coredump=no
+drm.service.enabled=true
+fmradio.driver.enable=1
+ro.mtk_audio_tuning_tool_ver=V1
+ro.mtk_audenh_support=1
+ro.mtk_fm_recording_support=1
+ro.mtk_dual_mic_support=1
+ro.mtk_perfservice_support=1
+ro.mtk_bt_support=1
+ro.mtk_bsp_package=1
+wfd.dummy.enable=1
+mtk.vdec.waitkeyframeforplay=1
+ro.media.maxmem=500000000
+ro.nxpnfc.feature=1
+mdc_initial_max_retry=10
+
+# OpenGL
+ro.opengles.version=196609
+
+# Platform
+ro.board.platform=mt6737m
+
+# Power off opt in IPO
+sys.ipo.pwrdncap=2
+
+# Storage
+ro.sys.usb.storage.type=mtp,adb
+ro.vold.umsdirtyratio=20
 
 # RIL
+rild.libpath=mtk-ril.so
+rild.libargs=-d /dev/ttyC0
 ro.telephony.sim.count=2
+persist.radio.default.sim=0
+persist.radio.mobile.data=0,0
 persist.radio.multisim.config=dsds
+bgw.current3gband=0
 ril.current.share_modem=2
 ril.external.md=0
 ril.telephony.mode=0
@@ -43,26 +80,58 @@ persist.radio.fd.off.counter=50
 persist.radio.fd.r8.counter=150
 persist.radio.fd.off.r8.counter=50
 ro.mtk_gemini_support=1
-ro.mtk_enable_md1=1
-ro.mtk_flight_mode_power_off_md=1
-ro.mtk_sim_hot_swap=1
-ro.mtk_world_phone=1
-ro.mtk_cta_set=1
+persist.gemini.sim_num=2
+ro.gemini.smart_sim_switch=false
+ro.com.android.mobiledata=false
 ro.mtk_lte_support=1
-ro.mtk_rild_read_imsi=1
-persist.md.perm.checked=1
+ro.boot.opt_lte_support=1
+ro.boot.opt_c2k_lte_mode=0
+ro.boot.opt_md1_support=5
+ro.boot.opt_md2_support=0
+ro.boot.opt_md3_support=0
+ro.boot.opt_md5_support=0
+persist.radio.mtk_ps3_rat=G
+ro.mtk_md_sbp_custom_value=0
+ro.mtk_world_phone_policy=0
+ro.mtk_enable_md1=1
+ro.mtk_fd_support=1
+ro.num_md_protocol=2
+ro.mtk_protocol1_rat_config=Lf/Lt/W/G
+ro.longcheer.sku=EMEA
+ro.longcheer.simsum=2
+ro.longcheer.thermal=1
+ro.boot.opt_eccci_c2k=0
 
-# other things
-ro.mediatek.chip_ver=S01
-ro.mediatek.version.release=alps-mp-n1.mp1-V1_lenovo6737m.35.n1_P68
-ro.mediatek.platform=MT6737M
-bgw.current3gband=0
+# Root
+service.adb.root=1
+persist.sys.root_access=0
+
+# Rotation
 ro.sf.hwrotation=0
-persist.mtk.wcn.combo.chipid=-1
-drm.service.enabled=true
-wfd.dummy.enable=1
-persist.sys.display.clearMotion=1
-ro.mtk_clearmotion_support=1
-keyguard.no_require_sim=true
-camera.disable_zsl_mode=1
-persist.debug.wfd.enable=1
+
+# SELinux
+ro.boot.selinux=disable
+
+# temporary enables NAV bar (soft keys)
+qemu.hw.mainkeys=1
+
+# Wifi
+ro.mediatek.wlan.wsc=1
+ro.mediatek.wlan.p2p=1
+mediatek.wlan.ctia=0
+wifi.tethering.interface=ap0
+wifi.interface=wlan0
+wifi.direct.interface=p2p0
+
+# USB BICR function
+ro.sys.usb.bicr=no
+
+# USB Charge only function
+ro.sys.usb.charging.only=yes
+
+# USB MTP WHQL
+ro.sys.usb.mtp.whql.enable=0
+
+# Zygote
+ro.zygote.preload.enable=0
+
