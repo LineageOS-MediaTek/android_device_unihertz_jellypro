@@ -1,0 +1,29 @@
+From 2e988150827e625ede36bbcc96659705015316e6 Mon Sep 17 00:00:00 2001
+From: Wang Xuerui <idontknw.wang@gmail.com>
+Date: Fri, 30 Sep 2016 21:00:47 +0800
+Subject: [PATCH] init: HACK re-allow services without selinux contexts defined
+
+Change-Id: I1c83d5fb9b84acb27f705e1b3042b63ff095c7e7
+---
+ init/service.cpp | 2 ++
+ 1 files changed, 2 insertions(+), 0 deletion(-)
+
+diff --git a/init/service.cpp b/init/service.cpp
+index ef59d7e093..152e5a9f2b 100644
+--- a/init/service.cpp
++++ b/init/service.cpp
+@@ -371,12 +371,14 @@ bool Service::Start() {
+             scon = ret_scon;
+             free(ret_scon);
+         }
++#if 0
+         if (rc == 0 && scon == mycon) {
+             ERROR("Service %s does not have a SELinux domain defined.\n", name_.c_str());
+             free(mycon);
+             free(fcon);
+             return false;
+         }
++#endif
+         free(mycon);
+         free(fcon);
+         if (rc < 0) {

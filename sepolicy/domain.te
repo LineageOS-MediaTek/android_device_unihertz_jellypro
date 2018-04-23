@@ -1,0 +1,2 @@
+# Fingerprint device
+allow domain esfp0_device:chr_file rw_file_perms;

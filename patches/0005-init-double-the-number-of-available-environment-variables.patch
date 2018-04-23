@@ -1,0 +1,44 @@
+From f347dc302deaba40b466a047c4a077edba662bec Mon Sep 17 00:00:00 2001
+From: Wang Xuerui <idontknw.wang@gmail.com>
+Date: Thu, 24 Mar 2016 01:55:24 +0800
+Subject: [PATCH] init: double the number of available environment variables
+
+[Ported to N by @xen0n.]
+
+Change-Id: Ie831be3e0ed907ef77d69cf47572088666bddf78
+
+Conflicts:
+	init/init.cpp
+---
+ init/init.cpp | 4 +++-
+ init/init.h   | 2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/init/init.cpp b/init/init.cpp
+index a1bcfdaf90..d87ca3027e 100755
+--- a/init/init.cpp
++++ b/init/init.cpp
+@@ -85,7 +85,9 @@ int have_console;
+ std::string console_name = "/dev/console";
+ static time_t process_needs_restart;
+ 
+-const char *ENV[32];
++// xen0n: some MTK services (e.g. ril-daemon-mtk) require very large number
++// of sockets, which can't be contained in 32 entries minus other variables.
++const char *ENV[64];
+ 
+ bool waiting_for_exec = false;
+ 
+diff --git a/init/init.h b/init/init.h
+index 345d442c09..f93d0c5bac 100644
+--- a/init/init.h
++++ b/init/init.h
+@@ -24,7 +24,7 @@ class Service;
+ 
+ #define COMMAND_RETRY_TIMEOUT 5
+ 
+-extern const char *ENV[32];
++extern const char *ENV[64];
+ extern bool waiting_for_exec;
+ extern int have_console;
+ extern std::string console_name;

@@ -1,0 +1,8 @@
+# sysfs directory file
+type sysfs_fingerprintd, fs_type, sysfs_type;
+
+# ET320
+type sysfs_etsd, fs_type, sysfs_type;
+
+# add for fingerprint ET3XX
+type etsd_data_file, file_type, data_file_type;

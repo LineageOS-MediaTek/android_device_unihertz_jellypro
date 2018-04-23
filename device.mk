@@ -22,12 +22,16 @@ FINGERPRINT_SUPPORT := true
 PRODUCT_PACKAGES += \
     power.mt6737m
 
+# Symbols
+PRODUCT_PACKAGES += \
+    libshims
+
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio_device.xml:system/vendor/etc/audio_device.xml \
     $(LOCAL_PATH)/configs/audio/audio_em.xml:system/vendor/etc/audio_em.xml \
     $(LOCAL_PATH)/configs/audio/AudioParamOptions.xml:/system/vendor/etc/audio_param/AudioParamOptions.xml \
-    $(LOCAL_PATH)/configs/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf
+    $(LOCAL_PATH)/configs/audio/audio_policy.conf:system/vendor/etc/audio_policy.conf3
 
 # Bluetooth
 PRODUCT_COPY_FILES += \

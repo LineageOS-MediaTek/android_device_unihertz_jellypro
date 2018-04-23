@@ -1,0 +1,2 @@
+# add for fingerprint ET3XX
+allow appdomain etsd_data_file:chr_file rw_file_perms;

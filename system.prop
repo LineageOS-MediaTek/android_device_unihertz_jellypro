@@ -65,6 +65,8 @@ ro.sys.usb.storage.type=mtp,adb
 ro.vold.umsdirtyratio=20
 
 # RIL
+ro.telephony.ril_class=MT6735
+ro.telephony.ril.config=fakeiccid
 rild.libpath=mtk-ril.so
 rild.libargs=-d /dev/ttyC0
 ro.telephony.sim.count=2

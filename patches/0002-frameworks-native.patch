@@ -1,0 +1,1332 @@
+diff --git a/include/gui/BufferQueueCore.h b/include/gui/BufferQueueCore.h
+index 4e54ddb..e4c9fad 100644
+--- a/include/gui/BufferQueueCore.h
++++ b/include/gui/BufferQueueCore.h
+@@ -185,10 +185,11 @@ private:
+     // PID of the process which last successfully called connect(...)
+     pid_t mConnectedPid;
+ 
++#ifndef MTK_HARDWARE
+     // mLinkedToDeath is used to set a binder death notification on
+     // the producer.
+     sp<IProducerListener> mLinkedToDeath;
+-
++#endif
+     // mConnectedProducerListener is used to handle the onBufferReleased
+     // notification.
+     sp<IProducerListener> mConnectedProducerListener;
+diff --git a/include/gui/IProducerListener.h b/include/gui/IProducerListener.h
+index b7826c6..e5a5a45 100644
+--- a/include/gui/IProducerListener.h
++++ b/include/gui/IProducerListener.h
+@@ -41,7 +41,9 @@ public:
+     // This is called without any lock held and can be called concurrently by
+     // multiple threads.
+     virtual void onBufferReleased() = 0; // Asynchronous
++#ifndef MTK_HARDWARE
+     virtual bool needsReleaseNotify() = 0;
++#endif
+ };
+ 
+ class IProducerListener : public ProducerListener, public IInterface
+@@ -55,14 +57,18 @@ class BnProducerListener : public BnInterface<IProducerListener>
+ public:
+     virtual status_t onTransact(uint32_t code, const Parcel& data,
+             Parcel* reply, uint32_t flags = 0);
++#ifndef MTK_HARDWARE
+     virtual bool needsReleaseNotify();
++#endif
+ };
+ 
+ class DummyProducerListener : public BnProducerListener
+ {
+ public:
+     virtual void onBufferReleased() {}
++#ifndef MTK_HARDWARE
+     virtual bool needsReleaseNotify() { return false; }
++#endif
+ };
+ 
+ } // namespace android
+diff --git a/include/media/openmax/OMX_IVCommon.h b/include/media/openmax/OMX_IVCommon.h
+index f9b6f4b..05317cd 100644
+--- a/include/media/openmax/OMX_IVCommon.h
++++ b/include/media/openmax/OMX_IVCommon.h
+@@ -164,6 +164,17 @@ typedef enum OMX_COLOR_FORMATTYPE {
+      *  codec can substitute any YUV420 packed planar or semiplanar
+      *  format for it. */
+     OMX_COLOR_FormatYUV420Flexible = 0x7F420888,
++    #ifdef MTK_HARDWARE
++    OMX_COLOR_FormatVendorMTKYUV = 0x7F000001,
++    OMX_COLOR_FormatVendorMTKYUV_FCM = 0x7F000002,
++    OMX_COLOR_FormatVendorMTKYUV_UFO = 0x7F000003,
++    OMX_COLOR_FormatVendorMTKYUV_10BIT_H = 0x7F000004,
++    OMX_COLOR_FormatVendorMTKYUV_10BIT_V = 0x7F000005,
++    OMX_COLOR_FormatVendorMTKYUV_UFO_10BIT_H = 0x7F000006,
++    OMX_COLOR_FormatVendorMTKYUV_UFO_10BIT_V = 0x7F000007,
++    OMX_MTK_COLOR_FormatYV12 = 0x7F000200,
++    OMX_MTK_COLOR_FormatBitStream = 0x7F000300,
++    #endif
+ 
+     OMX_TI_COLOR_FormatYUV420PackedSemiPlanar = 0x7F000100,
+     OMX_QCOM_COLOR_FormatYVU420SemiPlanar = 0x7FA30C00,
+diff --git a/include/ui/Fence.h b/include/ui/Fence.h
+index 48a7aa3..4e68952 100644
+--- a/include/ui/Fence.h
++++ b/include/ui/Fence.h
+@@ -26,9 +26,9 @@
+ #include <utils/Flattenable.h>
+ #include <utils/String8.h>
+ #include <utils/Timers.h>
+-
++#ifndef MTK_HARDWARE
+ #include <experimental/optional>
+-
++#endif
+ struct ANativeWindowBuffer;
+ 
+ namespace android {
+@@ -81,9 +81,10 @@ public:
+     // becomes signaled when both f1 and f2 are signaled (even if f1 or f2 is
+     // destroyed before it becomes signaled).  The name argument specifies the
+     // human-readable name to associated with the new Fence object.
++#ifndef MTK_HARDWARE
+     static sp<Fence> merge(const char* name, const sp<Fence>& f1,
+             const sp<Fence>& f2);
+-
++#endif
+     static sp<Fence> merge(const String8& name, const sp<Fence>& f1,
+             const sp<Fence>& f2);
+ 
+@@ -97,7 +98,7 @@ public:
+     // then INT64_MAX is returned.  If the fence is invalid or if an error
+     // occurs then -1 is returned.
+     nsecs_t getSignalTime() const;
+-
++#ifndef MTK_HARDWARE
+ #if __cplusplus > 201103L
+     // hasSignaled returns whether the fence has signaled yet. Prefer this to
+     // getSignalTime() or wait() if all you care about is whether the fence has
+@@ -118,7 +119,7 @@ public:
+         }
+     }
+ #endif
+-
++#endif
+     // Flattenable interface
+     size_t getFlattenedSize() const;
+     size_t getFdCount() const;
+@@ -136,6 +137,10 @@ private:
+     const Fence& operator = (const Fence& rhs) const;
+ 
+     int mFenceFd;
++#ifdef MTK_HARDWARE
++private:
++    void dump(int fd);
++#endif
+ };
+ 
+ }; // namespace android
+diff --git a/include/ui/mediatek/GuiExtMonitor.h b/include/ui/mediatek/GuiExtMonitor.h
+new file mode 100644
+index 0000000..614d1c4
+--- /dev/null
++++ b/include/ui/mediatek/GuiExtMonitor.h
+@@ -0,0 +1,133 @@
++#ifndef __GUIEXT_MONITOR_H__
++#define __GUIEXT_MONITOR_H__
++
++
++#include <utils/String8.h>
++#include <utils/Singleton.h>
++#include <utils/KeyedVector.h>
++
++#include <ui/mediatek/IDumpTunnel.h>
++
++
++namespace android {
++
++template <typename TYPE, typename ITEM>
++class GuiExtMonitor : public Singleton<TYPE>
++{
++public:
++    GuiExtMonitor();
++    virtual ~GuiExtMonitor();
++
++    virtual status_t monitor(ITEM item);
++    virtual status_t unmonitor(ITEM item);
++
++    virtual status_t dump(String8& result, const char* prefix);
++
++protected:
++    status_t getProcessName();
++    virtual String8 getKeyName() const;
++
++protected:
++    bool mIsRegistered;
++    String8 mProcessName;
++    mutable Mutex mLock;
++    sp<BnDumpTunnel> mDumpTunnel;
++    KeyedVector<ITEM, int> mItemList;
++};
++
++
++//--------------------------------------------------------------------------------------------------
++
++template <typename TYPE, typename ITEM>
++GuiExtMonitor<TYPE, ITEM>::GuiExtMonitor()
++    : mIsRegistered(false) {
++    getProcessName();
++}
++
++
++template <typename TYPE, typename ITEM>
++GuiExtMonitor<TYPE, ITEM>::~GuiExtMonitor() {
++    Mutex::Autolock _l(mLock);
++
++    if (mIsRegistered) {
++        DumpTunnelHelper::getInstance().unregDump(getKeyName());
++        mIsRegistered = false;
++    }
++}
++
++
++template <typename TYPE, typename ITEM>
++status_t GuiExtMonitor<TYPE, ITEM>::monitor(ITEM item) {
++    Mutex::Autolock _l(mLock);
++
++    mItemList.add(item, 0);
++    if (!mIsRegistered)
++    {
++
++        class MonitorTunnel : public BnDumpTunnel {
++        public:
++            MonitorTunnel(GuiExtMonitor<TYPE, ITEM>* pMonitor)
++                : mMonitor(pMonitor) {}
++            virtual ~MonitorTunnel() {}
++
++            // IDumpTunnel interface
++            virtual status_t kickDump(String8& result, const char* prefix) {
++                return mMonitor->dump(result, prefix);
++            }
++
++        private:
++            GuiExtMonitor<TYPE, ITEM>* mMonitor;
++        };
++
++        mDumpTunnel = new MonitorTunnel(this);
++        if (DumpTunnelHelper::getInstance().regDump(mDumpTunnel, getKeyName())) {
++            mIsRegistered = true;
++        }
++    }
++    return NO_ERROR;
++}
++
++
++template <typename TYPE, typename ITEM>
++status_t GuiExtMonitor<TYPE, ITEM>::unmonitor(ITEM item) {
++    Mutex::Autolock _l(mLock);
++
++    mItemList.removeItem(item);
++    return NO_ERROR;
++}
++
++
++template <typename TYPE, typename ITEM>
++status_t GuiExtMonitor<TYPE, ITEM>::dump(String8& /*result*/, const char* /*prefix*/) {
++    return NO_ERROR;
++}
++
++
++template <typename TYPE, typename ITEM>
++status_t GuiExtMonitor<TYPE, ITEM>::getProcessName() {
++    int pid = getpid();
++    FILE *fp = fopen(String8::format("/proc/%d/cmdline", pid), "r");
++    if (NULL != fp) {
++        const size_t size = 64;
++        char proc_name[size];
++        fgets(proc_name, size, fp);
++        fclose(fp);
++        mProcessName = proc_name;
++    } else {
++        mProcessName = "unknownProcess";
++    }
++    return NO_ERROR;
++}
++
++
++#define IMPLEMENT_META_GUIEXTMONITOR(TYPE, ITEM, NAME)                                  \
++    ANDROID_SINGLETON_STATIC_INSTANCE(TYPE);                                            \
++    template <>                                                                         \
++    String8 GuiExtMonitor<TYPE, ITEM>::getKeyName() const {                             \
++        return String8::format("%s-[%d:%s]", NAME, getpid(), mProcessName.string());    \
++    }
++
++
++}; // namespace android
++
++#endif
+\ No newline at end of file
+diff --git a/include/ui/mediatek/IDumpTunnel.h b/include/ui/mediatek/IDumpTunnel.h
+new file mode 100644
+index 0000000..8f9b663
+--- /dev/null
++++ b/include/ui/mediatek/IDumpTunnel.h
+@@ -0,0 +1,49 @@
++#ifndef ANDROID_GUI_IDUMPTUNNEL_H
++#define ANDROID_GUI_IDUMPTUNNEL_H
++
++#include <binder/IInterface.h>
++#include <utils/Singleton.h>
++
++namespace android
++{
++
++class IDumpTunnel : public IInterface {
++protected:
++    enum {
++        DUMPTUNNEL_DUMP = IBinder::FIRST_CALL_TRANSACTION
++    };
++
++public:
++    DECLARE_META_INTERFACE(DumpTunnel);
++
++    virtual status_t kickDump(String8& /*result*/, const char* /*prefix*/) = 0;
++};
++
++class BnDumpTunnel : public BnInterface<IDumpTunnel>
++{
++    virtual status_t onTransact(uint32_t code,
++                                const Parcel& data,
++                                Parcel* reply,
++                                uint32_t flags = 0);
++};
++
++// helper class for libgui_ext dynamic linking
++class DumpTunnelHelper : public Singleton<DumpTunnelHelper> {
++    void* mSoHandle;
++    bool (*mRegDumpPtr)(const sp<IDumpTunnel>&, const String8&);
++    bool (*mUnregDumpPtr)(const String8&);
++
++public:
++    DumpTunnelHelper();
++    virtual ~DumpTunnelHelper();
++
++    // register tunnel into guiext-server with a given key name
++    // and need to unregister it back
++    // in general usage, need to use identical key name for reg/unreg pair
++    bool regDump(const sp<IDumpTunnel>& tunnel, const String8& key);
++    bool unregDump(const String8& key);
++};
++
++
++};
++#endif
+diff --git a/include/ui/mediatek/RefBaseDump.h b/include/ui/mediatek/RefBaseDump.h
+new file mode 100644
+index 0000000..1ac8218
+--- /dev/null
++++ b/include/ui/mediatek/RefBaseDump.h
+@@ -0,0 +1,34 @@
++#ifndef ANDROID_REFBASE_DUMP_H__
++#define ANDROID_REFBASE_DUMP_H__
++
++#include <utils/String8.h>
++#include <ui/mediatek/GuiExtMonitor.h>
++
++namespace android {
++
++//-------------------------------------------------------------------------
++// RefBaseMonitor
++//-------------------------------------------------------------------------
++class RefBaseMonitor : public GuiExtMonitor<RefBaseMonitor, RefBase*> {
++public:
++    RefBaseMonitor();
++    ~RefBaseMonitor() {}
++
++    // add refbase to the monitored list
++    status_t monitor(RefBase* pRb);
++
++    // dump all elements in the monitored list and call printRefs if mIsTracking equals 1
++    status_t dump(String8& result, const char* prefix);
++
++protected:
++    // build the key name to register in GuiExt Service
++    String8 getKeyName() const;
++
++private:
++    // if trackMe needed
++    bool mIsTracking;
++};
++
++
++}; // namespace android
++#endif
+diff --git a/libs/gui/Android.mk b/libs/gui/Android.mk
+index 0889aaf..718282d 100644
+--- a/libs/gui/Android.mk
++++ b/libs/gui/Android.mk
+@@ -54,7 +54,6 @@ LOCAL_SRC_FILES := \
+ 	DisplayEventReceiver.cpp \
+ 	GLConsumer.cpp \
+ 	GraphicBufferAlloc.cpp \
+-	GraphicsEnv.cpp \
+ 	GuiConfig.cpp \
+ 	IDisplayEventConnection.cpp \
+ 	IGraphicBufferAlloc.cpp \
+@@ -74,6 +73,11 @@ LOCAL_SRC_FILES := \
+ 	SurfaceControl.cpp \
+ 	SurfaceComposerClient.cpp \
+ 	SyncFeatures.cpp \
++	
++ifndef MTK_HARDWARE
++LOCAL_SRC_FILES += \
++	GraphicsEnv.cpp
++endif
+ 
+ LOCAL_SHARED_LIBRARIES := \
+  	libnativeloader \
+diff --git a/libs/gui/BufferQueueCore.cpp b/libs/gui/BufferQueueCore.cpp
+index d610971..efd7723 100644
+--- a/libs/gui/BufferQueueCore.cpp
++++ b/libs/gui/BufferQueueCore.cpp
+@@ -59,7 +59,9 @@ BufferQueueCore::BufferQueueCore(const sp<IGraphicBufferAlloc>& allocator) :
+     mConsumerListener(),
+     mConsumerUsageBits(0),
+     mConnectedApi(NO_CONNECTED_API),
++#ifndef MTK_HARDWARE
+     mLinkedToDeath(),
++#endif
+     mConnectedProducerListener(),
+     mSlots(),
+     mQueue(),
+diff --git a/libs/gui/BufferQueueProducer.cpp b/libs/gui/BufferQueueProducer.cpp
+index ff85eb5..41c6814 100644
+--- a/libs/gui/BufferQueueProducer.cpp
++++ b/libs/gui/BufferQueueProducer.cpp
+@@ -1131,11 +1131,17 @@ status_t BufferQueueProducer::connect(const sp<IProducerListener>& listener,
+                         BQ_LOGE("connect: linkToDeath failed: %s (%d)",
+                                 strerror(-status), status);
+                     }
++#ifndef MTK_HARDWARE
+                     mCore->mLinkedToDeath = listener;
++#endif
+                 }
++#ifndef MTK_HARDWARE
+                 if (listener->needsReleaseNotify()) {
++#endif
+                     mCore->mConnectedProducerListener = listener;
++#ifndef MTK_HARDWARE
+                 }
++#endif
+             }
+             break;
+         default:
+@@ -1198,9 +1204,15 @@ status_t BufferQueueProducer::disconnect(int api, DisconnectMode mode) {
+                     mCore->freeAllBuffersLocked();
+ 
+                     // Remove our death notification callback if we have one
++#ifndef MTK_HARDWARE
+                     if (mCore->mLinkedToDeath != NULL) {
+                         sp<IBinder> token =
+                                 IInterface::asBinder(mCore->mLinkedToDeath);
++#else
++                    if (mCore->mConnectedProducerListener != NULL) {
++                        sp<IBinder> token =
++                                IInterface::asBinder(mCore->mConnectedProducerListener);
++#endif
+                         // This can fail if we're here because of the death
+                         // notification, but we just ignore it
+                         token->unlinkToDeath(
+@@ -1208,7 +1220,9 @@ status_t BufferQueueProducer::disconnect(int api, DisconnectMode mode) {
+                     }
+                     mCore->mSharedBufferSlot =
+                             BufferQueueCore::INVALID_BUFFER_SLOT;
++#ifndef MTK_HARDWARE
+                     mCore->mLinkedToDeath = NULL;
++#endif
+                     mCore->mConnectedProducerListener = NULL;
+                     mCore->mConnectedApi = BufferQueueCore::NO_CONNECTED_API;
+                     mCore->mConnectedPid = -1;
+diff --git a/libs/gui/ConsumerBase.cpp b/libs/gui/ConsumerBase.cpp
+index 3cf3078..25bf4e9 100644
+--- a/libs/gui/ConsumerBase.cpp
++++ b/libs/gui/ConsumerBase.cpp
+@@ -313,6 +313,7 @@ status_t ConsumerBase::addReleaseFenceLocked(int slot,
+     }
+ 
+     if (!mSlots[slot].mFence.get()) {
++#ifndef MTK_HARDWARE
+         mSlots[slot].mFence = fence;
+         return OK;
+     }
+@@ -331,6 +332,14 @@ status_t ConsumerBase::addReleaseFenceLocked(int slot,
+         snprintf(fenceName, 32, "%.28s:%d", mName.string(), slot);
+         sp<Fence> mergedFence = Fence::merge(
+                 fenceName, mSlots[slot].mFence, fence);
++#else
++        mSlots[slot].mFence = fence;
++    } else {
++        sp<Fence> mergedFence = Fence::merge(
++                String8::format("%.28s:%d", mName.string(), slot),
++                mSlots[slot].mFence, fence);
++
++#endif
+         if (!mergedFence.get()) {
+             CB_LOGE("failed to merge release fences");
+             // synchronization is broken, the best we can do is hope fences
+diff --git a/libs/gui/GLConsumer.cpp b/libs/gui/GLConsumer.cpp
+index 10e999c..a860e0f 100644
+--- a/libs/gui/GLConsumer.cpp
++++ b/libs/gui/GLConsumer.cpp
+@@ -1228,19 +1228,28 @@ EGLImageKHR GLConsumer::EglImage::createImage(EGLDisplay dpy,
+         EGL_NONE,
+     };
+     if (!crop.isValid()) {
++#ifndef MTK_HARDWARE
+         // No crop rect to set, so leave the crop out of the attrib array. Make
+         // sure to propagate the protected content attrs if they are set.
+         attrs[2] = attrs[10];
+         attrs[3] = attrs[11];
+         attrs[4] = EGL_NONE;
++#else
++        // No crop rect to set, so terminate the attrib array before the crop.
++        attrs[2] = EGL_NONE;
++#endif
+     } else if (!isEglImageCroppable(crop)) {
+         // The crop rect is not at the origin, so we can't set the crop on the
+         // EGLImage because that's not allowed by the EGL_ANDROID_image_crop
+         // extension.  In the future we can add a layered extension that
+         // removes this restriction if there is hardware that can support it.
++#ifndef MTK_HARDWARE
+         attrs[2] = attrs[10];
+         attrs[3] = attrs[11];
+         attrs[4] = EGL_NONE;
++#else
++        attrs[2] = EGL_NONE;
++#endif
+     }
+     eglInitialize(dpy, 0, 0);
+     EGLImageKHR image = eglCreateImageKHR(dpy, EGL_NO_CONTEXT,
+diff --git a/libs/gui/IProducerListener.cpp b/libs/gui/IProducerListener.cpp
+index da54ce1..da5f65e 100644
+--- a/libs/gui/IProducerListener.cpp
++++ b/libs/gui/IProducerListener.cpp
+@@ -22,7 +22,9 @@ namespace android {
+ 
+ enum {
+     ON_BUFFER_RELEASED = IBinder::FIRST_CALL_TRANSACTION,
++#ifndef MTK_HARDWARE
+     NEEDS_RELEASE_NOTIFY,
++#endif
+ };
+ 
+ class BpProducerListener : public BpInterface<IProducerListener>
+@@ -38,7 +40,7 @@ public:
+         data.writeInterfaceToken(IProducerListener::getInterfaceDescriptor());
+         remote()->transact(ON_BUFFER_RELEASED, data, &reply, IBinder::FLAG_ONEWAY);
+     }
+-
++#ifndef MTK_HARDWARE
+     virtual bool needsReleaseNotify() {
+         bool result;
+         Parcel data, reply;
+@@ -55,6 +57,7 @@ public:
+         }
+         return result;
+     }
++#endif
+ };
+ 
+ // Out-of-line virtual method definition to trigger vtable emission in this
+@@ -70,16 +73,19 @@ status_t BnProducerListener::onTransact(uint32_t code, const Parcel& data,
+             CHECK_INTERFACE(IProducerListener, data, reply);
+             onBufferReleased();
+             return NO_ERROR;
++#ifndef MTK_HARDWARE
+         case NEEDS_RELEASE_NOTIFY:
+             CHECK_INTERFACE(IProducerListener, data, reply);
+             reply->writeBool(needsReleaseNotify());
+             return NO_ERROR;
++#endif
+     }
+     return BBinder::onTransact(code, data, reply, flags);
+ }
+-
++#ifndef MTK_HARDWARE
+ bool BnProducerListener::needsReleaseNotify() {
+     return true;
+ }
++#endif
+ 
+ } // namespace android
+diff --git a/libs/gui/SurfaceControl.cpp b/libs/gui/SurfaceControl.cpp
+index d59b37c..df33860 100644
+--- a/libs/gui/SurfaceControl.cpp
++++ b/libs/gui/SurfaceControl.cpp
+@@ -132,6 +132,24 @@ status_t SurfaceControl::setBlurMaskAlphaThreshold(float alpha) {
+     return mClient->setBlurMaskAlphaThreshold(mHandle, alpha);
+ }
+ status_t SurfaceControl::setPosition(float x, float y) {
++#ifdef MTK_HARDWARE
++    const float ub = 20000.0;
++    const float lb = -20000.0;
++    if (CC_UNLIKELY(x > ub)) {
++        ALOGE("setPosition out of boundary: x = %f", x);
++        x = ub;
++    } else if (CC_UNLIKELY(x < lb)) {
++        ALOGE("setPosition out of boundary: x = %f", x);
++        x = lb;
++    }
++    if (CC_UNLIKELY(y > ub)) {
++        ALOGE("setPosition out of boundary: y = %f", y);
++        y = ub;
++    } else if (CC_UNLIKELY(x < lb)) {
++        ALOGE("setPosition out of boundary: y = %f", y);
++        y = lb;
++    }
++#endif
+     status_t err = validate();
+     if (err < 0) return err;
+     return mClient->setPosition(mHandle, x, y);
+diff --git a/libs/ui/Android.mk b/libs/ui/Android.mk
+index 2b16365..d4436bc 100644
+--- a/libs/ui/Android.mk
++++ b/libs/ui/Android.mk
+@@ -16,7 +16,7 @@ LOCAL_PATH := $(call my-dir)
+ include $(CLEAR_VARS)
+ 
+ LOCAL_CLANG := true
+-LOCAL_CPPFLAGS := -std=c++1y -Weverything -Werror
++LOCAL_CPPFLAGS := -std=c++1y -Weverything
+ # LOCAL_SANITIZE := integer
+ 
+ # The static constructors and destructors in this library have not been noted to
+@@ -55,6 +55,20 @@ LOCAL_SHARED_LIBRARIES := \
+ 	libsync \
+ 	libutils \
+ 	liblog
++	
++ifeq ($(BOARD_USES_MTK_HARDWARE),true)
++LOCAL_CFLAGS += -DMTK_HARDWARE
++	LOCAL_CPPFLAGS += -Wno-extra-semi -Wno-zero-length-array -Wno-gnu-statement-expression
++	LOCAL_CPPFLAGS += -D__STDC_FORMAT_MACROS
++
++	LOCAL_SRC_FILES += \
++		mediatek/Fence.cpp \
++		mediatek/IDumpTunnel.cpp \
++		mediatek/RefBaseDump.cpp
++
++	LOCAL_SHARED_LIBRARIES += \
++		libbinder
++endif
+ 
+ ifneq ($(BOARD_FRAMEBUFFER_FORCE_FORMAT),)
+ LOCAL_CFLAGS += -DFRAMEBUFFER_FORCE_FORMAT=$(BOARD_FRAMEBUFFER_FORCE_FORMAT)
+diff --git a/libs/ui/Fence.cpp b/libs/ui/Fence.cpp
+index 5531b23..f83c214 100644
+--- a/libs/ui/Fence.cpp
++++ b/libs/ui/Fence.cpp
+@@ -67,11 +67,41 @@ status_t Fence::waitForever(const char* logname) {
+     if (err < 0 && errno == ETIME) {
+         ALOGE("%s: fence %d didn't signal in %u ms", logname, mFenceFd,
+                 warningTimeout);
++#ifdef MTK_HARDWARE
++        dump(mFenceFd);
++#endif
++
+         err = sync_wait(mFenceFd, TIMEOUT_NEVER);
+     }
+     return err < 0 ? -errno : status_t(NO_ERROR);
+ }
+-
++#ifdef MTK_HARDWARE
++sp<Fence> Fence::merge(const String8& name, const sp<Fence>& f1,
++        const sp<Fence>& f2) {
++    ATRACE_CALL();
++    int result;
++    // Merge the two fences.  In the case where one of the fences is not a
++    // valid fence (e.g. NO_FENCE) we merge the one valid fence with itself so
++    // that a new fence with the given name is created.
++    if (f1->isValid() && f2->isValid()) {
++        result = sync_merge(name.string(), f1->mFenceFd, f2->mFenceFd);
++    } else if (f1->isValid()) {
++        result = sync_merge(name.string(), f1->mFenceFd, f1->mFenceFd);
++    } else if (f2->isValid()) {
++        result = sync_merge(name.string(), f2->mFenceFd, f2->mFenceFd);
++    } else {
++        return NO_FENCE;
++    }
++    if (result == -1) {
++        status_t err = -errno;
++        ALOGE("merge: sync_merge(\"%s\", %d, %d) returned an error: %s (%d)",
++                name.string(), f1->mFenceFd, f2->mFenceFd,
++                strerror(-err), err);
++        return NO_FENCE;
++    }
++    return sp<Fence>(new Fence(result));
++}
++#else
+ sp<Fence> Fence::merge(const char* name, const sp<Fence>& f1,
+         const sp<Fence>& f2) {
+     ATRACE_CALL();
+@@ -102,6 +132,7 @@ sp<Fence> Fence::merge(const String8& name, const sp<Fence>& f1,
+         const sp<Fence>& f2) {
+     return merge(name.string(), f1, f2);
+ }
++#endif
+ 
+ int Fence::dup() const {
+     return ::dup(mFenceFd);
+diff --git a/libs/ui/GraphicBuffer.cpp b/libs/ui/GraphicBuffer.cpp
+index df31d5f..2105edb 100644
+--- a/libs/ui/GraphicBuffer.cpp
++++ b/libs/ui/GraphicBuffer.cpp
+@@ -34,6 +34,35 @@ namespace android {
+ // Buffer and implementation of ANativeWindowBuffer
+ // ===========================================================================
+ 
++#ifdef MTK_HARDWARE
++class GraphicBufferStubDecker {
++ public:
++  ~GraphicBufferStubDecker();
++  GraphicBufferStubDecker(uint32_t inWidth, uint32_t inHeight,
++        PixelFormat inFormat, uint32_t inUsage);
++  sp<android::GraphicBuffer> mBuffer;
++};
++
++GraphicBufferStubDecker::GraphicBufferStubDecker(uint32_t inWidth, uint32_t inHeight,
++        PixelFormat inFormat, uint32_t inUsage)
++  : mBuffer(new android::GraphicBuffer(inWidth, inHeight, inFormat, inUsage)) {
++} // constructors take base initializers
++
++GraphicBufferStubDecker::~GraphicBufferStubDecker() {} // деструктор
++
++// экспорт
++extern "C" {
++
++void _ZN7android13GraphicBufferC1Ejjij(uint32_t inWidth, uint32_t inHeight,
++        PixelFormat inFormat, uint32_t inUsage); // прототип
++
++void _ZN7android13GraphicBufferC1Ejjij(uint32_t inWidth, uint32_t inHeight,
++        PixelFormat inFormat, uint32_t inUsage) {
++	GraphicBufferStubDecker::GraphicBufferStubDecker(inWidth, inHeight, inFormat, inUsage);
++}
++}
++#endif
++
+ static uint64_t getUniqueId() {
+     static volatile int32_t nextId = 0;
+     uint64_t id = static_cast<uint64_t>(getpid()) << 32;
+diff --git a/libs/ui/mediatek/Fence.cpp b/libs/ui/mediatek/Fence.cpp
+new file mode 100644
+index 0000000..1b832de
+--- /dev/null
++++ b/libs/ui/mediatek/Fence.cpp
+@@ -0,0 +1,58 @@
++#define LOG_TAG "Fence"
++
++#include <inttypes.h>
++#include <sync/sync.h>
++#include <ui/Fence.h>
++#include <unistd.h>
++
++#include <cutils/log.h>
++
++// ---------------------------------------------------------------------------
++
++static const char* findKeyWord(const char* msg) {
++    android::String8 obj_name(msg);
++    obj_name.toLower();
++    const char* OBJ_NAME = obj_name.string();
++
++    // NOTE: keep these keywords in sync with MOF
++    android::String8 keyword("timeline_");
++    if (strstr(OBJ_NAME, "surfaceflinger")) {
++        keyword.append("SurfaceFlinger");
++    } else if (strstr(OBJ_NAME, "ovl_timeline")) {
++        keyword.append("ovl_timeline");
++    } else if (strstr(OBJ_NAME, "mali")) {
++        keyword.append("mali");
++    }
++
++    return keyword.string();
++}
++
++// ---------------------------------------------------------------------------
++
++namespace android {
++
++void Fence::dump(int fd) {
++    if (-1 == fd) return;
++
++    struct sync_fence_info_data *info = sync_fence_info(fd);
++    if (info) {
++        struct sync_pt_info *pt_info = NULL;
++        // status: active(0) signaled(1) error(<0)
++        ALOGI("fence(%s) status(%d)", info->name, info->status);
++
++        // iterate active/error sync points
++        while ((pt_info = sync_pt_info(info, pt_info))) {
++            if (NULL != pt_info && pt_info->status <= 0) {
++                uint64_t ts_sec = pt_info->timestamp_ns / 1000000000LL;
++                uint64_t ts_usec = (pt_info->timestamp_ns % 1000000000LL) / 1000LL;
++
++                ALOGI("sync point: timeline(%s) drv(%s) status(%d) sync_drv(%u) timestamp(%" PRIu64 ".%06" PRIu64 ")",
++                    pt_info->obj_name, pt_info->driver_name, pt_info->status,
++                    *reinterpret_cast<uint32_t*>(pt_info->driver_data), ts_sec, ts_usec);
++            }
++        }
++        sync_fence_info_free(info);
++    }
++}
++
++} // namespace android
+diff --git a/libs/ui/mediatek/IDumpTunnel.cpp b/libs/ui/mediatek/IDumpTunnel.cpp
+new file mode 100644
+index 0000000..1f1d836
+--- /dev/null
++++ b/libs/ui/mediatek/IDumpTunnel.cpp
+@@ -0,0 +1,116 @@
++#define LOG_TAG "DumpTunnel"
++
++#define MTK_LOG_ENABLE 1
++#include <dlfcn.h>
++#include <utils/String8.h>
++#include <binder/Parcel.h>
++#include <cutils/log.h>
++#include <ui/mediatek/IDumpTunnel.h>
++
++namespace android {
++
++// client : proxy GuiEx class
++class BpDumpTunnel : public BpInterface<IDumpTunnel> {
++public:
++    BpDumpTunnel(const sp<IBinder>& impl)
++        :   BpInterface<IDumpTunnel>(impl) {
++    }
++
++    virtual ~BpDumpTunnel();
++
++    virtual status_t kickDump(String8& result, const char* prefix) {
++        Parcel data, reply;
++        data.writeInterfaceToken(IDumpTunnel::getInterfaceDescriptor());
++        data.writeString8(result);
++        data.writeCString(prefix);
++        status_t err = remote()->transact(DUMPTUNNEL_DUMP, data, &reply);
++        if (err != NO_ERROR) {
++            ALOGE("kickDump could not contact remote\n");
++            return err;
++        }
++        result = reply.readString8();
++        err = reply.readInt32();
++        return err;
++    }
++};
++
++// Out-of-line virtual method definition to trigger vtable emission in this
++// translation unit (see clang warning -Wweak-vtables)
++BpDumpTunnel::~BpDumpTunnel() {}
++
++IMPLEMENT_META_INTERFACE(DumpTunnel, "DumpTunnel");
++
++status_t BnDumpTunnel::onTransact(uint32_t code, const Parcel& data, Parcel* reply, uint32_t flags) {
++    switch (code) {
++        case DUMPTUNNEL_DUMP: {
++            CHECK_INTERFACE(IDumpTunnel, data, reply);
++            String8 result;
++            const char* prefix = NULL;
++            result = data.readString8();
++            prefix = data.readCString();
++
++            status_t ret = kickDump(result, prefix);
++            reply->writeString8(result);
++            reply->writeInt32(ret);
++            return NO_ERROR;
++        }
++    }
++    return BBinder::onTransact(code, data, reply, flags);
++}
++
++// ----------------------------------------------------------------------------
++
++ANDROID_SINGLETON_STATIC_INSTANCE(DumpTunnelHelper);
++
++DumpTunnelHelper::DumpTunnelHelper() :
++    mSoHandle(NULL),
++    mRegDumpPtr(NULL),
++    mUnregDumpPtr(NULL)
++{
++    typedef bool (*RegDumpPrototype)(const sp<IDumpTunnel>&, const String8&);
++    typedef bool (*UnregDumpPrototype)(const String8&);
++
++    // dlopen must set RTLD_LAZY flag because of performance issue
++    mSoHandle = dlopen("libgui_ext.so", RTLD_LAZY);
++    if (mSoHandle) {
++        mRegDumpPtr = reinterpret_cast<RegDumpPrototype>(dlsym(mSoHandle, "regDump"));
++        mUnregDumpPtr = reinterpret_cast<UnregDumpPrototype>(dlsym(mSoHandle, "unregDump"));
++        if (NULL == mRegDumpPtr) {
++            ALOGE("finding regDump() failed");
++        }
++        if (NULL == mUnregDumpPtr) {
++            ALOGE("finding unregDump() failed");
++        }
++    } else {
++        ALOGE("open libgui_ext failed");
++    }
++}
++
++DumpTunnelHelper::~DumpTunnelHelper() {
++    if(mSoHandle != NULL)
++        dlclose(mSoHandle);
++}
++
++bool DumpTunnelHelper::regDump(const sp<IDumpTunnel>& tunnel, const String8& key) {
++    bool result = false;
++    if (NULL == mRegDumpPtr) {
++        ALOGE("finding regDump() failed");
++        return result;
++    }
++    result = mRegDumpPtr(tunnel, key);
++
++    return result;
++}
++
++bool DumpTunnelHelper::unregDump(const String8& key) {
++    bool result = false;
++    if (NULL == mUnregDumpPtr) {
++        ALOGE("finding unregDump() failed");
++        return result;
++    }
++    result = mUnregDumpPtr(key);
++
++    return result;
++}
++
++};
+diff --git a/libs/ui/mediatek/RefBaseDump.cpp b/libs/ui/mediatek/RefBaseDump.cpp
+new file mode 100644
+index 0000000..8dcd5ab
+--- /dev/null
++++ b/libs/ui/mediatek/RefBaseDump.cpp
+@@ -0,0 +1,70 @@
++#define LOG_TAG "RefBaseDump"
++
++#if 0
++#define RBD_LOGV(x, ...) ALOGV(x, ##__VA_ARGS__)
++#define RBD_LOGD(x, ...) ALOGD(x, ##__VA_ARGS__)
++#define RBD_LOGI(x, ...) ALOGI(x, ##__VA_ARGS__)
++#define RBD_LOGW(x, ...) ALOGW(x, ##__VA_ARGS__)
++#define RBD_LOGE(x, ...) ALOGE(x, ##__VA_ARGS__)
++#else
++//#define RBD_LOGV(x, ...)
++//#define RBD_LOGD(x, ...)
++#define RBD_LOGI(x, ...)
++//#define RBD_LOGW(x, ...)
++//#define RBD_LOGE(x, ...)
++#endif
++
++#include <cutils/log.h>
++#include <cutils/properties.h>
++#include <ui/mediatek/RefBaseDump.h>
++
++namespace android {
++
++
++IMPLEMENT_META_GUIEXTMONITOR(RefBaseMonitor, RefBase*, "RB");
++
++RefBaseMonitor::RefBaseMonitor() {
++    char value[PROPERTY_VALUE_MAX];
++    RBD_LOGI("RefBaseMonitor ctor - %p", this);
++    getProcessName();
++    property_get("debug.rb.dump", value, "Mary had a little lamb");
++    mIsTracking = (-1 != mProcessName.find(value));
++}
++
++
++status_t RefBaseMonitor::monitor(RefBase* pRb) {
++    if (mIsTracking) {
++        pRb->trackMe(true, false);
++    }
++    return GuiExtMonitor<RefBaseMonitor, RefBase*>::monitor(pRb);
++}
++
++
++status_t RefBaseMonitor::dump(String8& result, const char* /*prefix*/) {
++    size_t listSz;
++    RefBase* pRb;
++    Mutex::Autolock _l(mLock);
++    RBD_LOGI("RefBaseMonitor Dump - %p", this);
++    listSz = mItemList.size();
++    result.appendFormat("\t  [%8p]    RefCnt   %s", this, mProcessName.string());
++    result.append(mIsTracking ? " <- tracking\n" : "\n");
++    result.append("\t  -----------------------\n");
++
++    for (size_t i = 0; i < listSz; i++) {
++        pRb = mItemList.keyAt(i);
++        if (mIsTracking) {
++            pRb->printRefs();
++        }
++        result.appendFormat("\t   %2zu) %8p %4d\n", i, pRb, pRb->getStrongCount());
++    }
++    result.append("\t*****************************************************\n");
++    return NO_ERROR;
++}
++
++
++String8 RefBaseMonitor::getKeyName() const {
++    return String8::format("RB-%p", this);
++}
++
++
++}; // namespace android
+diff --git a/opengl/include/EGL/eglext.h b/opengl/include/EGL/eglext.h
+index 2e18698..635db44 100644
+--- a/opengl/include/EGL/eglext.h
++++ b/opengl/include/EGL/eglext.h
+@@ -621,6 +621,10 @@ typedef EGLAPI EGLClientBuffer (EGLAPIENTRYP PFNEGLCREATENATIVECLIENTBUFFERANDRO
+ #define EGL_MUTABLE_RENDER_BUFFER_BIT_KHR 0x1000
+ #endif
+ 
++#ifdef MTK_HARDWARE
++void* egl_GVR_FrontBuffer(const EGLSurface surface);
++void* EGL_SEC_getClientBufferForFrontBuffer(EGLSurface surface);
++#endif
+ #ifndef EGL_ANDROID_get_frame_timestamps
+ #define EGL_ANDROID_get_frame_timestamps 1
+ #define EGL_TIMESTAMPS_ANDROID 0x314D
+@@ -638,6 +642,11 @@ typedef EGLAPI EGLBoolean (EGLAPIENTRYP PFNEGLGETFRAMETIMESTAMPSANDROID) (EGLDis
+ typedef EGLAPI EGLBoolean (EGLAPIENTRYP PFNEGLQUERYTIMESTAMPSUPPORTEDANDROID) (EGLDisplay dpy, EGLSurface surface, EGLint timestamp);
+ #endif
+ #endif
++#ifdef MTK_HARDWARE
++void* egl_GVR_FrontBuffer(const EGLSurface surface);
++void* EGL_SEC_getClientBufferForFrontBuffer(EGLSurface surface);
++#define EGL_IS_INVALID_MTK    0x43210001
++#endif
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/opengl/libs/EGL/Loader.cpp b/opengl/libs/EGL/Loader.cpp
+index 4234db8..b402a31 100644
+--- a/opengl/libs/EGL/Loader.cpp
++++ b/opengl/libs/EGL/Loader.cpp
+@@ -124,12 +124,12 @@ static char const * getProcessCmdline() {
+     }
+     return NULL;
+ }
+-
++#ifndef MTK_HARDWARE
+ static void* do_dlopen(const char* path, int mode) {
+     ATRACE_CALL();
+     return dlopen(path, mode);
+ }
+-
++#endif
+ // ----------------------------------------------------------------------------
+ 
+ Loader::driver_t::driver_t(void* gles)
+@@ -168,7 +168,7 @@ status_t Loader::driver_t::set(void* hnd, int32_t api)
+ }
+ 
+ // ----------------------------------------------------------------------------
+-
++#ifndef MTK_HARDWARE
+ Loader::Loader()
+     : getProcAddress(NULL),
+       mLibGui(nullptr),
+@@ -186,14 +186,24 @@ Loader::Loader()
+     mGetDriverNamespace = reinterpret_cast<decltype(mGetDriverNamespace)>(
+             dlsym(mLibGui, "android_getDriverNamespace"));
+ }
+-
++#else
++Loader::Loader()
++    : getProcAddress(NULL) {
++}
++#endif
+ Loader::~Loader() {
++#ifndef MTK_HARDWARE
+     if (mLibGui)
+         dlclose(mLibGui);
++#endif
+ }
+ 
+ static void* load_wrapper(const char* path) {
++#ifndef MTK_HARDWARE
+     void* so = do_dlopen(path, RTLD_NOW | RTLD_LOCAL);
++#else
++    void* so = dlopen(path, RTLD_NOW | RTLD_LOCAL);
++#endif
+     ALOGE_IF(!so, "dlopen(\"%s\") failed: %s", path, dlerror());
+     return so;
+ }
+@@ -347,8 +357,13 @@ void Loader::init_api(void* dso,
+         api++;
+     }
+ }
+-
++#ifndef MTK_HARDWARE
+ static void* load_system_driver(const char* kind) {
++#else
++void *Loader::load_driver(const char* kind,
++        egl_connection_t* cnx, uint32_t mask)
++{
++#endif
+     ATRACE_CALL();
+     class MatchFile {
+     public:
+@@ -464,8 +479,11 @@ static void* load_system_driver(const char* kind) {
+         return 0;
+     }
+     const char* const driver_absolute_path = absolutePath.string();
+-
++#ifndef MTK_HARDWARE
+     void* dso = do_dlopen(driver_absolute_path, RTLD_NOW | RTLD_LOCAL);
++#else
++    void* dso = dlopen(driver_absolute_path, RTLD_NOW | RTLD_LOCAL);
++#endif
+     if (dso == 0) {
+         const char* err = dlerror();
+         ALOGE("load_driver(%s): %s", driver_absolute_path, err?err:"unknown");
+@@ -473,7 +491,7 @@ static void* load_system_driver(const char* kind) {
+     }
+ 
+     ALOGD("loaded %s", driver_absolute_path);
+-
++#ifndef MTK_HARDWARE
+     return dso;
+ }
+ 
+@@ -525,13 +543,16 @@ void *Loader::load_driver(const char* kind,
+         if (!dso)
+             return NULL;
+     }
+-
++#endif
+     if (mask & EGL) {
+         getProcAddress = (getProcAddressType)dlsym(dso, "eglGetProcAddress");
+-
++#ifndef MTK_HARDWARE
+         ALOGE_IF(!getProcAddress,
+                 "can't find eglGetProcAddress() in EGL driver library");
+-
++#else
++        ALOGE_IF(!getProcAddress,
++                "can't find eglGetProcAddress() in %s", driver_absolute_path);
++#endif
+         egl_t* egl = &cnx->egl;
+         __eglMustCastToProperFunctionPointerType* curr =
+             (__eglMustCastToProperFunctionPointerType*)egl;
+diff --git a/opengl/libs/EGL/Loader.h b/opengl/libs/EGL/Loader.h
+index 04a8e41..bc5a1c7 100644
+--- a/opengl/libs/EGL/Loader.h
++++ b/opengl/libs/EGL/Loader.h
+@@ -24,9 +24,9 @@
+ #include <utils/Errors.h>
+ #include <utils/Singleton.h>
+ #include <utils/String8.h>
+-
++#ifndef MTK_HARDWARE
+ #include <gui/GraphicsEnv.h>
+-
++#endif
+ #include <EGL/egl.h>
+ 
+ // ----------------------------------------------------------------------------
+@@ -55,10 +55,10 @@ class Loader : public Singleton<Loader>
+     };
+     
+     getProcAddressType getProcAddress;
+-
++#ifndef MTK_HARDWARE
+     void* mLibGui;
+     decltype(android_getDriverNamespace)* mGetDriverNamespace;
+-
++#endif
+ public:
+     ~Loader();
+     
+diff --git a/opengl/libs/EGL/eglApi.cpp b/opengl/libs/EGL/eglApi.cpp
+index 0cd8b02..29289c0 100644
+--- a/opengl/libs/EGL/eglApi.cpp
++++ b/opengl/libs/EGL/eglApi.cpp
+@@ -219,6 +219,12 @@ static const extention_map_t sExtensionMap[] = {
+     { "eglCreateStreamFromFileDescriptorKHR",
+             (__eglMustCastToProperFunctionPointerType)&eglCreateStreamFromFileDescriptorKHR },
+ 
++#ifdef MTK_HARDWARE
++    { "egl_GVR_FrontBuffer",
++            (__eglMustCastToProperFunctionPointerType)&egl_GVR_FrontBuffer },
++    { "EGL_SEC_getClientBufferForFrontBuffer",
++            (__eglMustCastToProperFunctionPointerType)&EGL_SEC_getClientBufferForFrontBuffer },
++#endif
+     // EGL_ANDROID_get_frame_timestamps
+     { "eglGetFrameTimestampsANDROID",
+             (__eglMustCastToProperFunctionPointerType)&eglGetFrameTimestampsANDROID },
+@@ -659,6 +665,16 @@ EGLBoolean eglQuerySurface( EGLDisplay dpy, EGLSurface surface,
+         return setError(EGL_BAD_SURFACE, EGL_FALSE);
+ 
+     egl_surface_t const * const s = get_surface(surface);
++#ifdef MTK_HARDWARE
++    if (attribute == EGL_IS_INVALID_MTK)
++    {
++        int tmp_w;
++        EGLNativeWindowType win = (EGLNativeWindowType)s->win.get();
++
++        *value = s->win->query(win, NATIVE_WINDOW_HEIGHT, &tmp_w) != 0 ? 1 : 0;
++        return EGL_TRUE;
++    }
++#endif
+     return s->cnx->egl.eglQuerySurface(
+             dp->disp.dpy, s->surface, attribute, value);
+ }
+@@ -834,6 +850,19 @@ EGLBoolean eglMakeCurrent(  EGLDisplay dpy, EGLSurface draw,
+         // this will ALOGE the error
+         egl_connection_t* const cnx = &gEGLImpl;
+         result = setError(cnx->egl.eglGetError(), EGL_FALSE);
++#ifdef MTK_HARDWARE
++        if (NULL != cur_c)
++        {
++            SurfaceRef _cur_r(get_surface(cur_c->read));
++            SurfaceRef _cur_d(get_surface(cur_c->draw));
++
++            cur_c->read = EGL_NO_SURFACE;
++            cur_c->draw = EGL_NO_SURFACE;
++
++            _cur_r.release();
++            _cur_d.release();
++        }
++#endif
+     }
+     return result;
+ }
+@@ -1867,6 +1896,14 @@ EGLClientBuffer eglCreateNativeClientBufferANDROID(const EGLint *attrib_list)
+                     if (value & EGL_NATIVE_BUFFER_USAGE_TEXTURE_BIT_ANDROID) {
+                         usage |= GRALLOC_USAGE_HW_TEXTURE;
+                     }
++#ifdef MTK_HARDWARE
++                    // The buffer must be used for either a texture or a
++                    // renderbuffer.
++                    if ((value & EGL_NATIVE_BUFFER_USAGE_RENDERBUFFER_BIT_ANDROID) &&
++                        (value & EGL_NATIVE_BUFFER_USAGE_TEXTURE_BIT_ANDROID)) {
++                        return setError(EGL_BAD_PARAMETER, (EGLClientBuffer)0);
++                    }
++#endif
+                     break;
+                 default:
+                     return setError(EGL_BAD_PARAMETER, (EGLClientBuffer)0);
+@@ -2036,6 +2073,44 @@ EGLBoolean eglSetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface,
+     return EGL_FALSE;
+ }
+ 
++#ifdef MTK_HARDWARE
++void* egl_GVR_FrontBuffer(const EGLSurface surface)
++{
++    clearError();
++    ALOGW("[MTKME2] [egl_GVR_FrontBuffer] [+]: surface(%p)\n", surface);
++
++    int fbr_egl_enabled = 1;
++    char prop_value[128];
++
++    if (property_get("mtk.egl.fbr.enable", prop_value, "1") > 0) {
++        fbr_egl_enabled = atoi(prop_value);
++    }
++
++    if (!fbr_egl_enabled) {
++        ALOGW("[MTKME2] [egl_GVR_FrontBuffer] [-]: return NULL! FBR is not enabled, fbr_egl_enabled(%d)\n", fbr_egl_enabled);
++        return NULL;
++    }
++
++    egl_surface_t const * const s = get_surface(surface);
++    if (s->cnx->egl.eglGvrFrontBuffer) {
++        if(s->cnx->egl.eglGvrFrontBuffer(s->surface)) {
++            ALOGW("[MTKME2] [egl_GVR_FrontBuffer] [-]: return surface(%p)\n", surface);
++            return surface;
++        }
++    }
++
++    ALOGW("[MTKME2] [egl_GVR_FrontBuffer] [-]: return NULL!\n");
++    return NULL;
++}
++
++void* EGL_SEC_getClientBufferForFrontBuffer(EGLSurface surface)
++{
++    ALOGW("[MTKME2] [EGL_SEC_getClientBufferForFrontBuffer]: surface(%p)\n", surface);
++    return NULL;
++}
++#endif
++
++
+ EGLBoolean eglGetFrameTimestampsANDROID(EGLDisplay dpy, EGLSurface surface,
+         EGLint framesAgo, EGLint numTimestamps, const EGLint *timestamps,
+         EGLnsecsANDROID *values)
+diff --git a/opengl/libs/EGL/egl_entries.in b/opengl/libs/EGL/egl_entries.in
+index 2b56718..c304973 100644
+--- a/opengl/libs/EGL/egl_entries.in
++++ b/opengl/libs/EGL/egl_entries.in
+@@ -96,3 +96,6 @@ EGL_ENTRY(EGLBoolean, eglAwakenProcessIMG, void)
+ 
+ EGL_ENTRY(EGLBoolean, eglSwapBuffersWithDamageKHR, EGLDisplay, EGLSurface, EGLint *, EGLint)
+ EGL_ENTRY(EGLBoolean, eglSetDamageRegionKHR, EGLDisplay, EGLSurface, EGLint *, EGLint)
++
++/* MTK AOSP ENHANCEMENT */
++EGL_ENTRY(EGLBoolean, eglGvrFrontBuffer, const EGLSurface)
+\ No newline at end of file
+diff --git a/vulkan/libvulkan/driver.cpp b/vulkan/libvulkan/driver.cpp
+index ba99d0c..6cd3f5f 100644
+--- a/vulkan/libvulkan/driver.cpp
++++ b/vulkan/libvulkan/driver.cpp
+@@ -26,8 +26,9 @@
+ 
+ #include <android/dlext.h>
+ #include <cutils/properties.h>
++#ifndef MTK_HARDWARE
+ #include <gui/GraphicsEnv.h>
+-
++#endif
+ #include "driver.h"
+ #include "stubhal.h"
+ 
+@@ -128,7 +129,7 @@ class CreateInfoWrapper {
+ };
+ 
+ Hal Hal::hal_;
+-
++#ifndef MTK_HARDWARE
+ void* LoadLibrary(const android_dlextinfo& dlextinfo,
+                   const char* subname,
+                   int subname_len) {
+@@ -181,13 +182,13 @@ int LoadUpdatedDriver(const hw_module_t** module) {
+     ALOGD("loaded updated driver");
+     return 0;
+ }
+-
++#endif
+ bool Hal::Open() {
+     ALOG_ASSERT(!hal_.dev_, "OpenHAL called more than once");
+ 
+     // Use a stub device unless we successfully open a real HAL device.
+     hal_.dev_ = &stubhal::kDevice;
+-
++#ifndef MTK_HARDWARE
+     int result;
+     const hwvulkan_module_t* module = nullptr;
+ 
+@@ -206,7 +207,16 @@ bool Hal::Open() {
+         ALOGV("unable to load Vulkan HAL, using stub HAL (result=%d)", result);
+         return true;
+     }
++#else
++    const hwvulkan_module_t* module;
++    int result =
++        hw_get_module("vulkan", reinterpret_cast<const hw_module_t**>(&module));
++    if (result != 0) {
++        ALOGI("no Vulkan HAL present, using stub HAL");
++        return true;
++    }
+ 
++#endif
+     hwvulkan_device_t* device;
+     result =
+         module->common.methods->open(&module->common, HWVULKAN_DEVICE_0,

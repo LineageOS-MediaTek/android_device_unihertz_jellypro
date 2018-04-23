@@ -1,6 +1,8 @@
 # mt6737 platform boardconfig
 DEVICE_PATH := device/motorola/nicklaus
 
+# TARGET_SPECIFIC_HEADER_PATH := $(DEVICE_PATH)/include
+
 FORCE_32_BIT := true
 
 # Platform
@@ -46,15 +48,8 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := f2fs
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
-# TARGET_USES_MKE2FS := true
 
-# MTK Hardware Composer
-MTK_HWC_SUPPORT := yes
-MTK_HWC_VERSION := 1.4.1
-# MTK GPU
-MTK_GPU_VERSION := mali midgard r18p0
-# MTK Renderscript Driver
-OVERRIDE_RS_DRIVER := libRSDriver_mtk.so
+# TARGET_USES_MKE2FS := true # Use MKE2FS for creating ext4 images
 
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
@@ -77,6 +72,16 @@ TARGET_USES_64_BIT_BINDER := true
 endif
 BOARD_MKBOOTIMG_ARGS := --kernel_offset $(BOARD_KERNEL_OFFSET) --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $(BOARD_TAGS_OFFSET)
 
+# MTK Hardware Composer
+MTK_HWC_SUPPORT := yes
+MTK_HWC_VERSION := 1.4.1
+
+# MTK GPU
+MTK_GPU_VERSION := mali midgard r18p0
+
+# MTK Renderscript Driver
+OVERRIDE_RS_DRIVER := libRSDriver_mtk.so
+
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE          := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE 	:= 16777216
@@ -92,5 +97,12 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 # Seccomp filter
 BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 
+# SELinux Policy
+BOARD_SEPOLICY_DIRS := $(DEVICE_PATH)/sepolicy
+
+# Symbols
+TARGET_LDPRELOAD += libshims.so
+
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
+
