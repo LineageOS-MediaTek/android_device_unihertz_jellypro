@@ -94,7 +94,7 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
 # Common stuff
-$(call inherit-product, device/mediatek/mt6737-common/common.mk)
+$(call inherit-product, device/mediatek/mt6737-common/mt6737.mk)
 
 # Vendor
 $(call inherit-product, vendor/motorola/nicklaus/nicklaus-vendor.mk)

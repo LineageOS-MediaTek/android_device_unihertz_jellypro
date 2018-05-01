@@ -1,8 +1,4 @@
 #!/bin/bash
-cd frameworks/av
-# git reset --hard && git clean -f -d
-patch -p1 < ../../device/motorola/nicklaus/patches/0001-frmaeworks-av.patch
-cd ../..
 cd frameworks/native
 git reset --hard && git clean -f -d
 patch -p1 < ../../device/motorola/nicklaus/patches/0002-frameworks-native.patch
