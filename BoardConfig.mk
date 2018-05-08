@@ -53,7 +53,7 @@ FINGERPRINT_SUPPORT := true
 
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
-TARGET_KERNEL_SOURCE := kernel/motorola/cm
+TARGET_KERNEL_SOURCE := kernel/motorola/nicklaus
 TARGET_KERNEL_CONFIG := nicklaus_defconfig
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 2048
