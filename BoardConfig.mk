@@ -87,7 +87,8 @@ BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 BOARD_SEPOLICY_DIRS := $(DEVICE_PATH)/sepolicy
 
 # Symbols
-TARGET_LDPRELOAD += libshims.so
+LINKER_FORCED_SHIM_LIBS := /system/vendor/lib/libgui_ext.so|libshim_gui.so
+LINKER_FORCED_SHIM_LIBS += /system/lib/libnetutils.so|libshim_ifc.so
 
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop

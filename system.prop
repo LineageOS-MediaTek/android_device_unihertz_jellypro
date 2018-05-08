@@ -1,6 +1,7 @@
 #
 # system.prop for nicklaus
 #
+
 # Add for remove red borders
 persist.sys.strictmode.visual=0
 persist.sys.strictmode.disable=1

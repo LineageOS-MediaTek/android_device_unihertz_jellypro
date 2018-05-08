@@ -28,7 +28,8 @@ PRODUCT_PACKAGES += \
 
 # Symbols
 PRODUCT_PACKAGES += \
-    libshims
+    libshim_gui \
+    libshim_ifc
 
 # Audio
 PRODUCT_COPY_FILES += \
