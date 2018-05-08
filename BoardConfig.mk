@@ -74,7 +74,7 @@ BOARD_KERNEL_OFFSET = 0x00008000
 TARGET_USES_64_BIT_BINDER := true
 endif
 BOARD_MKBOOTIMG_ARGS := \
-        --base $(BOARD_KERNEL_BASE)
+        --base $(BOARD_KERNEL_BASE) \
         --kernel_offset $(BOARD_KERNEL_OFFSET) \
         --ramdisk_offset $(BOARD_RAMDISK_OFFSET) \
         --tags_offset $(BOARD_TAGS_OFFSET) \
@@ -100,4 +100,7 @@ BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
+
+# Hack for building without kernel sources
+$(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
 

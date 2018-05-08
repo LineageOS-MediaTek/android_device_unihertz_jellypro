@@ -81,5 +81,5 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui
 $(call inherit-product, device/mediatek/mt6737-common/mt6737.mk)
 
 # Vendor
-$(call inherit-product, vendor/motorola/nicklaus/nicklaus-vendor.mk)
+$(call inherit-product, vendor/unihertz/jellypro/jellypro-vendor.mk)
 
