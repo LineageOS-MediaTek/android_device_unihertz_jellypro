@@ -320,8 +320,8 @@ chmod 0660 /sys/class/misc/m_mag_misc/magactive
     chown system system /sys/class/misc/m_baro_misc/barodelay
     chown system system /sys/class/misc/m_baro_misc/barobatch
     chown system system /sys/class/misc/m_baro_misc/baroflush
-
-
+	chmod 0660 /sys/class/misc/m_step_c_misc/step_cactive
+	chown system system /sys/class/misc/m_step_c_misc/step_cactive
     #Accdet
     chown root radio /sys/devices/platform/Accdet_Driver/driver/accdet_call_state
 
@@ -507,7 +507,11 @@ chmod 0660 /sys/class/misc/m_mag_misc/magactive
     chmod 0660 /dev/kd_camera_flashlight
     chmod 0660 /dev/kd_camera_hw_bus2
     chmod 0660 /dev/FM50AF
-   chmod 0660 /dev/CAM_CAL_DRV
+	chmod 0660 /dev/BU64291AF
+	chmod 0660 /dev/BU6429AF
+	chmod 0660 /dev/DW9800AF
+	chmod 0660 /dev/DW9714AF
+    chmod 0660 /dev/CAM_CAL_DRV 
 
     chown system camera /dev/camera-sysram
     chown system camera /dev/camera-isp
@@ -517,6 +521,10 @@ chmod 0660 /sys/class/misc/m_mag_misc/magactive
     chown system camera /dev/kd_camera_flashlight
     chown system camera /dev/kd_camera_hw_bus2
     chown system camera /dev/FM50AF
+	chown system camera /dev/BU64291AF
+	chown system camera /dev/BU6429AF
+	chown system camera /dev/DW9800AF
+	chown system camera /dev/DW9714AF  
     chown system camera /dev/CAM_CAL_DRV
 
     #MATV
@@ -642,7 +650,7 @@ on boot
     chmod 0220 /sys/power/tuxonice/do_hibernate
 
     # swtp feature to detect RF cable status
-    chown system system /sys/class/switch/rfswitch/state
+    # chown system system /sys/class/switch/rfswitch/state
 
 # Smartbook Handler Framework
     chown system system /sys/power/sb_state

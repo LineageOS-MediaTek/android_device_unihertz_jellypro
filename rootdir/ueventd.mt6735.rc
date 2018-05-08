@@ -14,9 +14,6 @@
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/logo      0660    root    system
 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/frp       0660    root    system
 
-#FPC
-/dev/esfp0 				  0660 system system
-
 # OTP
 /dev/otp                 0660 system system
 
@@ -81,8 +78,6 @@
 /dev/pvrsrvkm             0666   root       root
 /dev/pvr_sync             0666   root       root
 
-# NFC
-/dev/pn547                0664   nfc        nfc
 
 /sys/devices/platform/leds-mt65xx/leds/green   delay_on      0664  system   system
 /sys/devices/platform/leds-mt65xx/leds/green   delay_off      0664  system   system
@@ -115,4 +110,3 @@
 
 #MTK In-House TEE
 /dev/ttyACM0              0660   radio      radio
-
