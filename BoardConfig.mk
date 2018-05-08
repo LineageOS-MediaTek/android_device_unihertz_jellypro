@@ -48,9 +48,12 @@ BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 
 # TARGET_USES_MKE2FS := true # Use MKE2FS for creating ext4 images
 
+# Fingerprint
+FINGERPRINT_SUPPORT := true
+
 # Kernel
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
-TARGET_KERNEL_SOURCE := kernel/motorola/nicklaus
+TARGET_KERNEL_SOURCE := kernel/motorola/cm
 TARGET_KERNEL_CONFIG := nicklaus_defconfig
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 2048
@@ -85,10 +88,6 @@ BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
 
 # SELinux Policy
 BOARD_SEPOLICY_DIRS := $(DEVICE_PATH)/sepolicy
-
-# Symbols
-LINKER_FORCED_SHIM_LIBS := /system/vendor/lib/libgui_ext.so|libshim_gui.so
-LINKER_FORCED_SHIM_LIBS += /system/lib/libnetutils.so|libshim_ifc.so
 
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop

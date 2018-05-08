@@ -15,22 +15,6 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_AAPT_CONFIG := normal xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Fingerprint
-FINGERPRINT_SUPPORT := true
-
-# Power
-PRODUCT_PACKAGES += \
-    power.mt6737m
-
-# Lights
-PRODUCT_PACKAGES += \
-    lights.mt6737m
-
-# Symbols
-PRODUCT_PACKAGES += \
-    libshim_gui \
-    libshim_ifc
-
 # Audio
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/audio,system/vendor/etc)
