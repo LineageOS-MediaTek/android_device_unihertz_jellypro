@@ -1,2 +1,0 @@
-# add for fingerprint ET3XX
-type etsd_service,                  service_manager_type;

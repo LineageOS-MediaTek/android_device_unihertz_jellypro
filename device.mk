@@ -1,12 +1,12 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
-# $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+# $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
 # Inherit from the common Open Source product configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := nicklaus,e4plus
+TARGET_OTA_ASSERT_DEVICE := jellypro,Jelly-Pro
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
@@ -69,8 +69,7 @@ PRODUCT_COPY_FILES += \
 
 # Extras
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-	ro.config.low_ram=false \
-	ro.hw.gyroscope=false
+	ro.config.low_ram=false
 
 # Dalvik heap configurations
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)

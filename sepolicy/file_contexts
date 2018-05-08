@@ -1,6 +1,0 @@
-# Fingerprint device
-/dev/esfp0(/.*)? u:object_r:esfp0_device:s0
-
-# aka.jiang add for fingerprint ET3XX 20160308
-/system/bin/etsd  u:object_r:etsd_exec:s0
-/dev/esfp0       u:object_r:etsd_data_file:s0
