@@ -1,5 +1,5 @@
 #
-# system.prop for nicklaus
+# system.prop for Jelly-Pro
 #
 
 # Add for remove red borders
@@ -18,14 +18,14 @@ debug.hwui.render_dirty_regions=false
 ro.hardware.egl=mali
 
 # LCD
-ro.sf.lcd_density=320
-persist.sys.lcd_density=320
+ro.sf.lcd_density=210
+persist.sys.lcd_density=210
 
 # MTK H/W
 ro.mediatek.chip_ver=S01
-ro.mediatek.version.release=alps-mp-n1.mp1-V1_lenovo6737m.35.n1_P68
-ro.mediatek.version.branch=alps-mp-n1.mp1
-ro.mediatek.platform=MT6737M
+ro.mediatek.version.release=alps-mp-n0.mp1-V1.19_even6737t.66.n
+ro.mediatek.version.branch=alps-mp-n0.mp1
+ro.mediatek.platform=MT6737T
 ro.mediatek.version.sdk=4
 persist.mtk.wcn.combo.chipid=0x0335
 persist.mtk.wcn.patch.version=-1
@@ -42,21 +42,19 @@ fmradio.driver.enable=1
 ro.mtk_audio_tuning_tool_ver=V1
 ro.mtk_audenh_support=1
 ro.mtk_fm_recording_support=1
-ro.mtk_dual_mic_support=1
+ro.mtk_dual_mic_support=0
 ro.mtk_perfservice_support=1
 ro.mtk_bt_support=1
 ro.mtk_bsp_package=1
 wfd.dummy.enable=1
 mtk.vdec.waitkeyframeforplay=1
 ro.media.maxmem=500000000
-ro.nxpnfc.feature=1
-mdc_initial_max_retry=10
 
 # OpenGL
 ro.opengles.version=196609
 
 # Platform
-ro.board.platform=mt6737m
+ro.board.platform=mt6737t
 
 # Power off opt in IPO
 sys.ipo.pwrdncap=2
@@ -100,9 +98,6 @@ ro.mtk_enable_md1=1
 ro.mtk_fd_support=1
 ro.num_md_protocol=2
 ro.mtk_protocol1_rat_config=Lf/Lt/W/G
-ro.longcheer.sku=EMEA
-ro.longcheer.simsum=2
-ro.longcheer.thermal=1
 ro.boot.opt_eccci_c2k=0
 
 # Root
@@ -137,4 +132,3 @@ ro.sys.usb.mtp.whql.enable=0
 
 # Zygote
 ro.zygote.preload.enable=0
-
