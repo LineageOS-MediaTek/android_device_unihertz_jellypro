@@ -64,9 +64,6 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 
-# Seccomp filter
-BOARD_SECCOMP_POLICY := $(DEVICE_PATH)/seccomp
-
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
