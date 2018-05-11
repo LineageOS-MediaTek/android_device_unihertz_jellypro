@@ -50,12 +50,6 @@
     <path name="ext_speaker_output" value="turnoff">
         <kctl name="Ext_Speaker_Amp_Switch" value="Off" />
     </path>    
-    <path name="ext_speaker_output_close_headphone" value="turnon">
-        <kctl name="Ext_Speaker_Amp_Switch_Close_Headphone_PA" value="On" />
-    </path>
-    <path name="ext_speaker_output_close_headphone" value="turnoff">
-        <kctl name="Ext_Speaker_Amp_Switch_Close_Headphone_PA" value="Off" />
-    </path>    																	  
     <!--mic setting--> 
     <path name="builtin_Mic_Mic1" value="turnon">
         <kctl name="Audio_MicSource1_Setting" value="ADC1" />

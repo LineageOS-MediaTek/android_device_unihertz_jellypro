@@ -80,27 +80,8 @@ Only the three quirks included above are recognized at this point:
     <Settings>
         <Setting name="max-video-encoder-input-buffers" value="10" />
     </Settings>
+    <Include href="media_codecs_mediatek_audio.xml" />
     <Include href="media_codecs_mediatek_video.xml" />
     <Include href="media_codecs_google_audio.xml" />
     <Include href="media_codecs_google_video_le.xml" />
-        <!-- DOLBY_UDC  add gouxinyue-->
-<Decoders>
-        <MediaCodec name="OMX.dolby.ac3.decoder" type="audio/ac3">
-            <Limit name="channel-count" max="6" />
-            <Limit name="sample-rate" ranges="32000,44100,48000" />
-            <Limit name="bitrate" range="32000-640000" />
-        </MediaCodec>
-        <MediaCodec name="OMX.dolby.eac3.decoder" type="audio/eac3">
-            <Limit name="channel-count" max="8" />
-            <Limit name="sample-rate" ranges="32000,44100,48000" />
-            <Limit name="bitrate" range="32000-6144000" />
-        </MediaCodec>
-        <MediaCodec name="OMX.dolby.eac3_joc.decoder" type="audio/eac3-joc">
-            <Limit name="channel-count" max="8" />
-            <Limit name="sample-rate" ranges="48000" />
-            <Limit name="bitrate" range="32000-6144000" />
-        </MediaCodec>
-</Decoders>
-        <!-- DOLBY_UDC END 20161122-->
 </MediaCodecs>
-

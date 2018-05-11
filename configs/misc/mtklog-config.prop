@@ -7,4 +7,3 @@ com.mediatek.log.modem.maxsize = 2000
 com.mediatek.log.net.enabled = false
 com.mediatek.log.net.maxsize = 600
 com.mediatek.log.gps.enabled = false
-

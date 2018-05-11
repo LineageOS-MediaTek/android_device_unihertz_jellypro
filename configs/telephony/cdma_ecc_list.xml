@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EccTable>
-    <!-- 
+    <!--
         The attribute definition for tag EccEntry:
         - Ecc: the emergnecy number
         - Category: the service category
@@ -8,6 +8,8 @@
             - 0: ecc only when no sim
             - 1: ecc always
             - 2: MMI will show ecc but send to nw as normal call
+        - Plmn: ecc for specific operator
+                format: xxx xx (for specific mnc) or xxx FFF (for all mnc under same mcc)
     -->
     <EccEntry Ecc="110" Category="0" Condition="1" />
     <EccEntry Ecc="112" Category="0" Condition="1" />
@@ -17,4 +19,3 @@
     <EccEntry Ecc="911" Category="0" Condition="1" />
     <EccEntry Ecc="122" Category="0" Condition="1" />
 </EccTable>
-

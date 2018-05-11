@@ -94,3 +94,8 @@ key 163   MEDIA_NEXT
 key 165   MEDIA_PREVIOUS
 key 168   MEDIA_REWIND
 key 159   MEDIA_FAST_FORWARD
+
+#[AGOLD][2016.09.05]taoqiong add key patch
+key 249   FUNC1  WAKE
+key 250   FUNC2  WAKE
+#end

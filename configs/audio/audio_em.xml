@@ -45,7 +45,6 @@
         <Option>SetFmVolume=0</Option>
         <Option>ANC_CMD=0</Option>
         <Option>af.dumplog=1</Option>
-        <Option>LowLatencyDebugEnable=1</Option>
     </SetParameters>
 
     <GetParameters>
@@ -54,4 +53,3 @@
         <Option>DUAL_MIC_GET_GAIN</Option>
     </GetParameters>
 </AudioParameter>
-

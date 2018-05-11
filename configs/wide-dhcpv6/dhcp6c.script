@@ -59,4 +59,3 @@ case "${REASON}" in
 		setprop dhcp.ipv6.${interface}.result "failed"
 		;;
 esac
-
