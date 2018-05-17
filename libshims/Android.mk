@@ -6,6 +6,9 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := GraphicBuffer.cpp
 LOCAL_SHARED_LIBRARIES := libui
 
+# ( _ZN7android14CameraMetadata14getTagFromNameEPKcPKNS_19VendorTagDescriptorEPj )
+LOCAL_SRC_FILES += misc.cpp
+
 LOCAL_MODULE := libshims
 LOCAL_MODULE_TAGS := optional
 
