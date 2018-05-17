@@ -74,7 +74,7 @@ on charger
     chmod 0666 /dev/kmsg
     write /sys/devices/platform/battery_meter/FG_daemon_log_level 7
     start fuelgauged
-    start charge_only_mode
+    start kpoc_charger
     start servicemanager
 
 on fs
@@ -1100,11 +1100,6 @@ service guiext-server /vendor/bin/guiext-server
     class main
     user system
     group system graphics
-
-service charge_only_mode /system/bin/charge_only_mode
-     user root
-     group graphics system input
-     disabled
 
 service kpoc_charger /vendor/bin/kpoc_charger
     class charger
