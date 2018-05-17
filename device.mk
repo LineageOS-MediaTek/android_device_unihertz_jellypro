@@ -15,6 +15,10 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_AAPT_CONFIG := normal xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
+# Symbols
+PRODUCT_PACKAGES += \
+    libshims
+
 # Audio
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,${LOCAL_PATH}/configs/audio,system/vendor/etc)

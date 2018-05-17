@@ -67,5 +67,8 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
+# Symbols
+TARGET_LDPRELOAD += libshims.so
+
 # Hack for building without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
