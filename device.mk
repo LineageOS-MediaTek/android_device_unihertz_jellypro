@@ -15,9 +15,9 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_AAPT_CONFIG := normal xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Symbols
+# Power
 PRODUCT_PACKAGES += \
-    libshims
+    power.mt6737t
 
 # Audio
 PRODUCT_COPY_FILES += \
