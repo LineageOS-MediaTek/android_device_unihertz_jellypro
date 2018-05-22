@@ -67,10 +67,11 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 # System Properties
 TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
-# Symbols
-TARGET_LDPRELOAD := libshim_misc.so
+# Linker
 LINKER_FORCED_SHIM_LIBS := /system/vendor/bin/thermal|libshim_ifc.so
 LINKER_FORCED_SHIM_LIBS += /system/vendor/lib64/libui_ext.so|libshim_ui.so
+LINKER_FORCED_SHIM_LIBS += /system/lib/libandroid_runtime.so|libshim_misc.so
+LINKER_FORCED_SHIM_LIBS += /system/vendor/lib64/libgui_ext.so|libshim_gui.so
 
 # Hack for building without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
