@@ -16,8 +16,8 @@ PRODUCT_AAPT_CONFIG := normal xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # Power
-PRODUCT_PACKAGES += \
-    power.mt6737t
+# PRODUCT_PACKAGES += \
+#     power.mt6737t
 
 # Audio
 PRODUCT_COPY_FILES += \
