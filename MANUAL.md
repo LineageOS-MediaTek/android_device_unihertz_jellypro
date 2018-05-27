@@ -67,7 +67,7 @@ export ANDROID_JACK_VM_ARGS="-Xmx4096m -Xms512m -Dfile.encoding=UTF-8 -XX:+Tiere
 ```
 #### Start building :) 
 ```
-sh build/envsetup.sh 
+source build/envsetup.sh 
 breakfast jellypro
 make -j8 bacon | tee build.log
 ```
