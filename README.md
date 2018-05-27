@@ -7,7 +7,7 @@ Click here to see [Building manual](https://github.com/LineageOS-MediaTek/androi
 
 Basic   | Spec Sheet
 -------:|:-------------------------
-CPU     | 1.1Ghz Quad-Core ARM Cortex-A53
+CPU     | 1.1Ghz Quad-Core ARM64 Cortex-A53
 Chipset | MediaTek MT6737T
 GPU     | Mali-T720 MP2
 Memory  | 2GB RAM
