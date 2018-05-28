@@ -18,8 +18,8 @@ debug.hwui.render_dirty_regions=false
 ro.hardware.egl=mali
 
 # LCD
-ro.sf.lcd_density=210
-persist.sys.lcd_density=210
+ro.sf.lcd_density=120
+persist.sys.lcd_density=120
 
 # MTK H/W
 ro.mediatek.chip_ver=S01
