@@ -59,7 +59,7 @@ ro.mtk_protocol1_rat_config=Lf/Lt/W/G
 ro.sf.hwrotation=0
 
 # temporary enables NAV bar (soft keys)
-qemu.hw.mainkeys=0
+qemu.hw.mainkeys=1
 
 # WFD 
 wfd.dummy.enable=1
