@@ -54,6 +54,7 @@ ro.mtk_enable_md1=1
 ro.mtk_fd_support=1
 ro.num_md_protocol=2
 ro.mtk_protocol1_rat_config=Lf/Lt/W/G
+ro.telephony.default_network=9,9
 
 # Rotation
 ro.sf.hwrotation=0
