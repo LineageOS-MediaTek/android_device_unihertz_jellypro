@@ -63,7 +63,7 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 
 # System Properties
-TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
+TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
 
 # Linker
 LINKER_FORCED_SHIM_LIBS := /system/vendor/bin/thermal|libshim_ifc.so
