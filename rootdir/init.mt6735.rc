@@ -45,6 +45,12 @@ on init
 
     mkdir /mnt/cd-rom 0000 system system
     	
+    mkdir /mnt/silead/ 0777 shell shell
+    mkdir /mnt/silead/tmp 0777 shell shell
+    mount tmpfs tmpfs /mnt/silead/tmp mode=0777,gid = 1000
+    write /mnt/silead/tmp/stub.txt ready
+    chmod 777 /mnt/silead/tmp/stub.txt
+	
 # change lk_env permission
     chown root system /proc/lk_env
     chmod 0660 /proc/lk_env
@@ -83,9 +89,7 @@ on fs
     mount_all /fstab.mt6735
    	
     write /sys/kernel/debug/tracing/trace_marker "E"
-    write /proc/bootprof "INIT:Mount_END"
-    wait /dev/block/bootdevice/by-name/hw
-    start oem-hw-sh										 
+    write /proc/bootprof "INIT:Mount_END"									 
 
 on post-fs
     write /proc/bootprof "INIT:post-fs"
@@ -244,6 +248,25 @@ on post-fs-data
     chown radio system /dev/als_ps
     chown system system /dev/gyroscope
     chown system system /dev/aal_als
+	chmod 0666 /dev/spkctl
+	chmod 0777 /dev/RDA5820
+    chmod 0666 /dev/als_ps
+    chmod 0666 /dev/aw2013
+    chmod 0777 /dev/fpc1080
+    chmod 0777 /dev/halldev
+    chmod 0666 /dev/silead_fp_dev
+    chmod 0666 /dev/madev0
+    chmod 0777 /dev/esfp0
+    chmod 0666 /dev/ttyMT1
+    chmod 0666 /dev/ttyMT2
+    chmod 0666 /dev/ttyMT3
+	chmod 0666 /dev/ttyMT4
+    chmod 0666 /sys/class/leds/button-backlight/brightness 
+	chmod 0666 /dev/AGOLD_DRIVER
+	chmod 0666 /sys/class/android_usb/android0/iSerial
+	chmod 0666 /sys/class/android_usb/android0/iProduct
+	chmod 0777 /dev/laser
+    chown system camera /dev/laser						  
     chmod 0660 /sys/class/misc/m_acc_misc/accenablenodata
     chmod 0660 /sys/class/misc/m_acc_misc/accactive
     chmod 0660 /sys/class/misc/m_acc_misc/accdelay
@@ -916,7 +939,6 @@ service slpd /vendor/bin/slpd
     user gps
     group gps inet
 
-
 # Sensors
 service msensord /vendor/bin/msensord
     class main
@@ -934,17 +956,27 @@ service ami304d /vendor/bin/ami304d
     disabled
     class main
 
-service memsicd /vendor/bin/memsicd
-     disabled
+service memsicd3416x /vendor/bin/memsicd3416x
+    oneshot  
     user system
     group system
     class main
 
-service memsicd3416x /vendor/bin/memsicd3416x
-     disabled
-	 user system
+service memsicd3524x /vendor/bin/memsicd3524x
+    user system
+    group system
+    class main    
+
+service st480 /vendor/bin/st480
+    user system
+    group system
+    class main    
+
+service qmcX983d /vendor/bin/qmcX983d
+    user system
     group system
     class main
+    oneshot
 
 service akmd8975 /vendor/bin/akmd8975
     disabled
@@ -1203,3 +1235,20 @@ service mediacodec /system/bin/mediacodec
     user mediacodec
     group media system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm sdcard_r media_rw sdcard_rw
     ioprio rt 4
+
+service nvram_proximity /system/bin/nvram_proximity
+    user root
+    oneshot
+    disabled
+
+on property:init.svc.nvram_daemon=stopped
+    start nvram_proximity
+
+service gocsdk /system/bin/gocsdk
+    class main
+    user root
+    group root		 
+
+service ANvRAMAgent /system/bin/agoldnvram
+    class main
+    user root
