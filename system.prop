@@ -12,4 +12,3 @@ ro.mediatek.platform=MT6737T
 
 # Telephony
 ro.telephony.default_network=9,9
-
