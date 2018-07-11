@@ -563,7 +563,7 @@ chmod 0660 /sys/class/misc/m_mag_misc/magactive
     chown system media /dev/mt-mdp
 
     # SMI
-    chmod 0660 /dev/MTK_SMI
+    chmod 0666 /dev/MTK_SMI
     chown media media /dev/MTK_SMI
 
    #change partition permission
