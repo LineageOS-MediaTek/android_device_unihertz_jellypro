@@ -63,12 +63,10 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
 
 # Linker
-LINKER_FORCED_SHIM_LIBS := /system/vendor/bin/thermal|libshim_ifc.so
-LINKER_FORCED_SHIM_LIBS += /system/lib/libmedia.so|libshim_misc.so:/system/lib64/libmedia.so|libshim_misc.so:/system/lib/libstagefright.so|libshim_misc.so:/system/lib64/libstagefright.so|libshim_misc.so:/system/lib/libandroid_runtime.so|libshim_misc.so:/system/lib64/libandroid_runtime.so|libshim_misc.so
-LINKER_FORCED_SHIM_LIBS += /system/vendor/lib/libui_ext.so|libshim_ui.so:/system/vendor/lib64/libui_ext.so|libshim_ui.so:/system/vendor/lib/libcam_utils.so|libshim_ui.so:/system/vendor/lib64/libcam_utils.so|libshim_ui.so
-LINKER_FORCED_SHIM_LIBS += /system/vendor/lib/libMtkOmxVenc.so|libshim_ui.so
-LINKER_FORCED_SHIM_LIBS += /system/vendor/lib/libgui_ext.so|libshim_gui.so:/system/vendor/lib64/libgui_ext.so|libshim_gui.so
-LINKER_FORCED_SHIM_LIBS += /system/vendor/lib/mtk-ril.so|libshim_ifc.so:/system/vendor/lib64/mtk-ril.so|libshim_ifc.so
+LINKER_FORCED_SHIM_LIBS := /system/lib/libmedia.so|libshim_misc.so:/system/lib64/libmedia.so|libshim_misc.so:/system/lib/libstagefright.so|libshim_misc.so:/system/lib64/libstagefright.so|libshim_misc.so:/system/lib/libandroid_runtime.so|libshim_misc.so:/system/lib64/libandroid_runtime.so|libshim_misc.so
+LINKER_FORCED_SHIM_LIBS += /system/lib/libnetutils.so|libshim_ifc.so:/system/lib64/libnetutils.so|libshim_ifc.so
+LINKER_FORCED_SHIM_LIBS += /system/lib/libui.so|libshim_ui.so:/system/lib64/libui.so|libshim_ui.so
+LINKER_FORCED_SHIM_LIBS += /system/lib/libgui.so|libshim_gui.so:/system/lib64/libgui.so|libshim_gui.so
 
 # Hack for building without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
