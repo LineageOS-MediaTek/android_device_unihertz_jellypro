@@ -14,9 +14,11 @@
 # limitations under the License.
 #
 
+-include $(DEVICE_PATH)/RecoveryConfig.mk
+
 # Platform
 TARGET_BOARD_PLATFORM := mt6737t
-TARGET_BOOTLOADER_BOARD_NAME := c223v37t
+TARGET_BOOTLOADER_BOARD_NAME := mt6735
 TARGET_NO_BOOTLOADER := true
 
 # Extensions
@@ -55,10 +57,3 @@ TARGET_PREBUILT_KERNEL := device/unihertz/jellypro/prebuilt/kernel.gz
 DEVICE_RESOLUTION := 240x432
 TARGET_SCREEN_WIDTH := 240
 TARGET_SCREEN_HEIGHT := 432
-
-# TWRP						 
-TW_DEVICE_VERSION := Jelly-Pro-Oreo
-# TW_DEVICE_VERSION := $(shell date -u +"%Y%m%d_%H%M")
-TW_ALWAYS_RMRF := true
-TW_INCLUDE_FB2PNG := true
-TW_CUSTOM_CPU_TEMP_PATH := /sys/devices/virtual/thermal/thermal_zone1/temp
