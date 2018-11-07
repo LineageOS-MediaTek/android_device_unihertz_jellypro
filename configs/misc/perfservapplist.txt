@@ -1,1 +1,0 @@
-CMD_SET_CPU_CORE_MIN com.imangi.templerun2 3

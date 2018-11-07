@@ -48,11 +48,6 @@ TARGET_CPU_CORTEX_A53 := true
 TARGET_SCREEN_HEIGHT := 432
 TARGET_SCREEN_WIDTH := 240
 
-# Filesystem
-TARGET_USERIMAGES_USE_EXT4 := true
-BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_HAS_LARGE_FILESYSTEM := true
-
 # Kernel
 BOARD_KERNEL_BASE := 0x40078000
 BOARD_KERNEL_PAGESIZE := 2048
@@ -65,21 +60,32 @@ BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3925868544
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 1610612736
-BOARD_CACHEIMAGE_PARTITION_SIZE := 419430400
+# BOARD_CACHEIMAGE_PARTITION_SIZE := 419430400
 BOARD_FLASH_BLOCK_SIZE := 131072
 
+TARGET_USERIMAGES_USE_EXT4 := true
+
+TARGET_USES_MKE2FS := true
+
 # Recovery
-BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/fstab.mt6735
 
 # System Properties
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
+TARGET_SYSTEM_PROP := $(DEVICE_PATH)/system.prop
 
-# Linker
-LINKER_FORCED_SHIM_LIBS := /system/lib/libmedia.so|libshim_misc.so:/system/lib64/libmedia.so|libshim_misc.so:/system/lib/libstagefright.so|libshim_misc.so:/system/lib64/libstagefright.so|libshim_misc.so:/system/lib/libandroid_runtime.so|libshim_misc.so:/system/lib64/libandroid_runtime.so|libshim_misc.so
-LINKER_FORCED_SHIM_LIBS += /system/lib/libnetutils.so|libshim_ifc.so:/system/lib64/libnetutils.so|libshim_ifc.so
-LINKER_FORCED_SHIM_LIBS += /system/lib/libui.so|libshim_ui.so:/system/lib64/libui.so|libshim_ui.so
-LINKER_FORCED_SHIM_LIBS += /system/lib/libgui.so|libshim_gui.so:/system/lib64/libgui.so|libshim_gui.so
+# Dexpreopt
+# WITH_DEXPREOPT := true
+# WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
+
+# Graphics
+TARGET_USES_HWC2 := true
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+
+# MTK Hardware
+BOARD_USES_MTK_HARDWARE := true
+
+# SELinux
+# BOARD_SEPOLICY_DIRS := $(COMMON_PATH)/sepolicy
 
 # Hack for building without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
