@@ -17,7 +17,7 @@
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
 # Inherit some common lineageos stuff.
-$(call inherit-product, vendor/cm/config/common_full_phone.mk)
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 PRODUCT_DEVICE := jellypro
 PRODUCT_NAME := lineage_jellypro
