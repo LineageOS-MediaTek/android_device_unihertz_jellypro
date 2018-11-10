@@ -16,11 +16,8 @@
 
 ## Specify phone tech before including full_phone
 
-# Release name
-PRODUCT_RELEASE_NAME := jellypro
-
 # Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := jellypro
@@ -28,6 +25,3 @@ PRODUCT_NAME := full_jellypro
 PRODUCT_BRAND := unihertz
 PRODUCT_MODEL := Jelly-Pro
 PRODUCT_MANUFACTURER := Unihertz
-
-# Available languages
-PRODUCT_LOCALES := en_US en_GB ru_RU uk_UA tr_TR sk_SK vi_VN fr_FR ar_EG
