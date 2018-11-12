@@ -42,7 +42,7 @@ repo sync -c -f -q -j8 --force-sync --no-clone-bundle --no-tags --optimized-fetc
 #### Clone necessary trees
 ```
 git clone https://github.com/LineageOS-MediaTek/android_device_unihertz_jellypro -b cm-14.1 device/unihertz/jellypro
-git clone https://github.com/LineageOS-MediaTek/android_device_mediatek_mt6737-common -b cm-14.1 device/mediatek/mt6737-common
+git clone https://github.com/LineageOS-MediaTek/android_device_mediatek_common -b cm-14.1 device/mediatek/common
 git clone https://github.com/LineageOS-MediaTek/proprietary_vendor_unihertz -b cm-14.1 vendor/unihertz
 ```
 ## Building Source

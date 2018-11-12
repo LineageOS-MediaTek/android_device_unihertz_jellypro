@@ -44,13 +44,7 @@ on init
     mkdir /custom
 
     mkdir /mnt/cd-rom 0000 system system
-    	
-    mkdir /mnt/silead/ 0777 shell shell
-    mkdir /mnt/silead/tmp 0777 shell shell
-    mount tmpfs tmpfs /mnt/silead/tmp mode=0777,gid = 1000
-    write /mnt/silead/tmp/stub.txt ready
-    chmod 777 /mnt/silead/tmp/stub.txt
-	
+
 # change lk_env permission
     chown root system /proc/lk_env
     chmod 0660 /proc/lk_env
@@ -673,7 +667,7 @@ on boot
     chmod 0220 /sys/power/tuxonice/do_hibernate
 
     # swtp feature to detect RF cable status
-    # chown system system /sys/class/switch/rfswitch/state
+    chown system system /sys/class/switch/rfswitch/state
 
 # Smartbook Handler Framework
     chown system system /sys/power/sb_state
@@ -1235,20 +1229,3 @@ service mediacodec /system/bin/mediacodec
     user mediacodec
     group media system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm sdcard_r media_rw sdcard_rw
     ioprio rt 4
-
-service nvram_proximity /system/bin/nvram_proximity
-    user root
-    oneshot
-    disabled
-
-on property:init.svc.nvram_daemon=stopped
-    start nvram_proximity
-
-service gocsdk /system/bin/gocsdk
-    class main
-    user root
-    group root		 
-
-service ANvRAMAgent /system/bin/agoldnvram
-    class main
-    user root
